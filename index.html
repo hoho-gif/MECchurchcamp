@@ -425,7 +425,7 @@ body {
     </main>
     <footer class="footer">三鷹福音教会</footer>
     <script>
-        'use strict';
+            'use strict';
 // 郵便番号→住所自動入力
 const fetchAddress = zipCode => {
     if (zipCode.length === 7) {
@@ -760,6 +760,189 @@ function rempeople() {
         }
     }
 }
+
+// nextpage関数とフォーム復元機能を追加
+
+// URLパラメータからフォームデータを復元する関数
+function restoreFormFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    
+    // パラメータがない場合は何もしない
+    if (params.toString() === '') return;
+    
+    // テキスト、メール、数値、日付入力を復元
+    params.forEach((value, key) => {
+        const element = document.getElementById(key);
+        if (element) {
+            if (element.type === 'radio') {
+                // ラジオボタンは name で探す
+                const radio = document.querySelector(`input[name="${key}"][value="${value}"]`);
+                if (radio) radio.checked = true;
+            } else if (element.tagName === 'SELECT') {
+                element.value = value;
+            } else {
+                element.value = value;
+            }
+        }
+    });
+    
+    // ラジオボタンの復元（name属性で検索）
+    params.forEach((value, key) => {
+        const radios = document.querySelectorAll(`input[name="${key}"]`);
+        if (radios.length > 0) {
+            radios.forEach(radio => {
+                if (radio.value === value) {
+                    radio.checked = true;
+                }
+            });
+        }
+    });
+}
+
+// 次へ進むボタンの処理
+function nextpage() {
+    // 必須項目のチェック
+    const requiredFields = [
+        'family-name', 'family-kana', 'first-name', 'first-kana', 
+        'birthday', 'age', 'email-address', 'zipcode', 'address', 'addressNum'
+    ];
+    
+    for (const field of requiredFields) {
+        const el = document.getElementById(field);
+        if (!el || !el.value) {
+            alert('必須項目を全て入力してください');
+            return;
+        }
+    }
+    
+    // 性別チェック
+    if (!document.querySelector('input[name="gender"]:checked')) {
+        alert('性別を選択してください');
+        return;
+    }
+    
+    // 申込種別チェック
+    const entryType = document.querySelector('input[name="entryType"]:checked');
+    if (!entryType) {
+        alert('申込種別を選択してください');
+        return;
+    }
+    
+    // 申込種別が「全キャンセル」でない場合のみ参加状況をチェック
+    if (entryType.value !== 'cancel') {
+        const goback = document.getElementById('GOBACK');
+        if (!goback || goback.value === 'none' || goback.value === '') {
+            alert('参加状況を選択してください');
+            return;
+        }
+    }
+    
+    // フォームデータを収集
+    const params = new URLSearchParams();
+    
+    // テキスト入力、日付、数値、メールなど
+    document.querySelectorAll('input[type="text"], input[type="email"], input[type="number"], input[type="date"]').forEach(el => {
+        if (el.id && el.value) {
+            params.append(el.id, el.value);
+        }
+    });
+    
+    // ラジオボタン（有効・無効の両方）
+    document.querySelectorAll('input[type="radio"]:checked').forEach(el => {
+        params.append(el.name, el.value);
+    });
+    
+    // セレクトボックス
+    document.querySelectorAll('select').forEach(el => {
+        if (el.id && el.value) {
+            params.append(el.id, el.value);
+        }
+    });
+    
+    // 確認ページに遷移
+    window.location.href = 'confirmation.html?' + params.toString();
+}
+
+// DOMContentLoaded時の処理を更新
+window.addEventListener('DOMContentLoaded', () => {
+    // URLパラメータからフォームデータを復元
+    restoreFormFromURL();
+    
+    // 既存の初期化
+    renderExtraApplicants(4, 10);
+    updateExtraAges();
+    updateAgeAtCamp();
+    
+    // 参加状況の初期化
+    const gobackSelect = document.getElementById('GOBACK');
+    if (gobackSelect && gobackSelect.value) {
+        toggleFields();
+        
+        if (gobackSelect.value === 'MiddleCameBack') {
+            const startDate = document.getElementById('startDate');
+            const endDate = document.getElementById('endDate');
+            
+            if (startDate && startDate.value) {
+                updateMealSelect('startDate', 'first-meal');
+            }
+            if (endDate && endDate.value) {
+                updateMealSelect('endDate', 'last-meal');
+            }
+            
+            // 少し遅延させて食事テーブルを生成（select要素の準備を待つ）
+            setTimeout(() => {
+                generateMealTable();
+            }, 100);
+        } else if (gobackSelect.value === 'All') {
+            generateAllJoinMealTable();
+        }
+    } else {
+        // デフォルトのテーブル生成
+        updateMealSelect('startDate', 'first-meal');
+        updateMealSelect('endDate', 'last-meal');
+        generateMealTable();
+        generateAllJoinMealTable();
+    }
+    
+    // 申込種別の表示を復元
+    const entryTypeChecked = document.querySelector('input[name="entryType"]:checked');
+    if (entryTypeChecked) {
+        updateEntryType();
+        
+        // 新規申し込みで追加申込者がいる場合、表示を復元
+        if (entryTypeChecked.value === 'new') {
+            const partialFields3 = document.getElementById('partialFields3');
+            if (partialFields3) {
+                partialFields3.style.display = 'block';
+            }
+            
+            for (let i = 4; i <= 14; i++) {
+                const nameField = document.getElementById(`first-name${i}`);
+                if (nameField && nameField.value) {
+                    const partialField = document.getElementById(`partialFields${i}`);
+                    if (partialField) {
+                        partialField.style.display = 'block';
+                    }
+                }
+            }
+        }
+    }
+    
+    // イベントリスナーの登録
+    document.getElementById('GOBACK').addEventListener('change', toggleFields);
+    document.getElementById('entryTypeGroup').addEventListener('change', updateEntryType);
+    
+    document.getElementById('startDate').addEventListener('change', () => {
+        updateMealSelect('startDate', 'first-meal');
+        generateMealTable();
+    });
+    document.getElementById('endDate').addEventListener('change', () => {
+        updateMealSelect('endDate', 'last-meal');
+        generateMealTable();
+    });
+    document.getElementById('first-meal').addEventListener('change', generateMealTable);
+    document.getElementById('last-meal').addEventListener('change', generateMealTable);
+});
     </script>
 </body>
 
