@@ -1,0 +1,298 @@
+:root {
+    --main-bg: #e8e5ce;
+    --main-color: #333;
+    --accent: #1976d2;
+    --border-radius: 8px;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: #faf9f6;
+    color: var(--main-color);
+}
+
+header {
+    background: var(--main-bg);
+    padding: 2rem 0;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 80vh;
+    margin-bottom: 4rem;
+}
+
+.side {
+    flex: 1 1 0;
+}
+
+.center {
+    flex: 0 1 480px;
+    background: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 8px #0001;
+    padding: 2rem 2.5vw;
+    margin: 0 1vw;
+}
+
+form {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.2em;
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="date"],
+select {
+    width: 90%;
+    max-width: 350px;
+    padding: 0.5em;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    margin-bottom: 0.7em;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+#age {
+    width: 60px;
+    min-width: 0;
+    max-width: 80px;
+}
+
+/* 申込種別ラジオボタンをカード風に */
+.entry-radio-group {
+    display: flex;
+    justify-content: center;
+    gap: 1.2em;
+    margin-bottom: 1.2em;
+    font-size: 0.95em;
+}
+
+.entry-radio {
+    display: flex;
+    align-items: center;
+    background: #f5f5f5;
+    border: 2px solid #ccc;
+    border-radius: 1.5em;
+    padding: 0.4em 1em;
+    font-size: 0.98em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border 0.2s, background 0.2s, color 0.2s;
+    box-shadow: 0 1px 4px #0001;
+}
+
+.entry-radio span {
+    font-size: 0.97em;
+}
+
+.entry-radio input[type="radio"] {
+    accent-color: var(--accent);
+    margin-right: 0.5em;
+}
+
+.entry-radio:hover,
+.entry-radio input[type="radio"]:focus+span {
+    border-color: var(--accent);
+    background: #e3f0fd;
+}
+
+.entry-radio input[type="radio"]:checked+span {
+    color: var(--accent);
+    font-weight: bold;
+    border-color: var(--accent);
+}
+
+.required {
+    color: #d32f2f;
+    margin-left: 0.2em;
+}
+
+.large-object {
+    transform: scale(1.3);
+    margin: 0 0.3em;
+}
+
+.partialFields, #partialFields, #partialFields2, #partialFields3 {
+    display: none;
+    margin-top: 1em;
+    padding: 1em;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    background: #f7f6f2;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 1em auto 0 auto;
+    width: 100%;
+    max-width: 400px;
+    background: #fff;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+th,
+td {
+    padding: 0.5em 0.7em;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: var(--main-bg);
+    font-weight: 600;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+.footer {
+    background: var(--main-bg);
+    padding: 1.5rem 0;
+    text-align: center;
+    font-size: 1.1rem;
+    position: fixed;
+    width: 100vw;
+    left: 0;
+    bottom: 0;
+    z-index: 10;
+}
+
+.modern-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+    color: #fff;
+    border: none;
+    border-radius: 2em;
+    padding: 0.7em 1.7em;
+    font-size: 1.08em;
+    font-weight: 600;
+    box-shadow: 0 2px 8px #1976d230;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+    outline: none;
+}
+
+.modern-btn:hover,
+.modern-btn:focus {
+    background: linear-gradient(90deg, #1565c0 60%, #1976d2 100%);
+    box-shadow: 0 4px 16px #1976d250;
+    transform: translateY(-2px) scale(1.04);
+}
+
+.modern-btn svg {
+    width: 1.2em;
+    height: 1.2em;
+    vertical-align: middle;
+    fill: currentColor;
+}
+
+@media (max-width: 700px) {
+    main {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .side {
+        display: none;
+    }
+
+    .center {
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .footer {
+        font-size: 1rem;
+    }
+}
+
+/* --- Mobile-friendly improvements --- */
+/* avoid footer overlapping content on small screens */
+body {
+    padding-bottom: 5rem;
+}
+
+/* make dynamically generated meal tables horizontally scrollable */
+#dynamicMealTable,
+#allJoinMealTable {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+#dynamicMealTable table,
+#allJoinMealTable table {
+    min-width: 420px;
+}
+
+/* per-applicant meal tables: allow scroll and ensure min width */
+.partialFields > div {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.partialFields table {
+    min-width: 320px;
+}
+
+/* slightly larger radio targets for touch */
+.center input[type="radio"] {
+    width: 1.4em;
+    height: 1.4em;
+    transform: scale(1.05);
+}
+
+/* keep form controls full-width on small screens for easier tapping */
+@media (max-width: 700px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="date"],
+    select {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .modern-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    table {
+        font-size: 0.95em;
+    }
+
+    th, td {
+        padding: 0.45em 0.6em;
+    }
+}
+
+/* small improvement: reduce table padding slightly on all sizes to avoid overflow */
+table th, table td {
+    white-space: nowrap;
+}
+
+/* make interactive labels easier to tap inside the form area */
+.center label[for] {
+    padding: 0.15em 0;
+}
+
+/* End mobile improvements */

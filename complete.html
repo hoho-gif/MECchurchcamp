@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>申し込み完了 - 教会キャンプ2026</title>
+    <style>
+        :root {
+            --main-bg: #e8e5ce;
+            --main-color: #333;
+            --accent: #1976d2;
+            --success: #2e7d32;
+        }
+        
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: #faf9f6;
+            color: var(--main-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background: var(--main-bg);
+            padding: 2rem 0;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+        
+        .complete-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            padding: 3rem 2rem;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--success);
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.5s ease-out;
+        }
+        
+        .checkmark svg {
+            width: 50px;
+            height: 50px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+            animation: drawCheck 0.8s ease-out 0.3s forwards;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes drawCheck {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+        h1 {
+            color: var(--success);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .message {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+        
+        .info-box {
+            background: #f7f6f2;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        
+        .info-box h3 {
+            color: var(--accent);
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .info-box ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+        
+        .info-box li {
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+        }
+        
+        .contact {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+            font-size: 0.95rem;
+            color: #666;
+        }
+        
+        .contact strong {
+            color: var(--main-color);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn-home {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-home:hover {
+            background: linear-gradient(90deg, #1565c0 60%, #1976d2 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+        
+        .footer {
+            background: var(--main-bg);
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 700px) {
+            .complete-card {
+                padding: 2rem 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .message {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>教会キャンプ2026年</header>
+    
+    <main>
+        <div class="complete-card">
+            <div class="checkmark">
+                <svg viewBox="0 0 52 52">
+                    <polyline points="14 27 22 35 38 19"/>
+                </svg>
+            </div>
+            
+            <h1>申し込みが完了しました!</h1>
+            
+            <p class="message">
+                教会キャンプ2026年のお申し込みを受け付けました。<br>
+                ご登録いただいたメールアドレスに確認メールをお送りしますので、<br>
+                ご確認ください。
+            </p>
+            
+            <div class="info-box">
+                <h3>今後の流れ</h3>
+                <ul>
+                    <li>数日以内に担当者より詳細についてご連絡いたします</li>
+                    <li>参加費のお支払い方法については別途ご案内いたします</li>
+                    <li>キャンプの詳細情報は開催日の1週間前までにお送りします</li>
+                    <li>変更・キャンセルがある場合は、お早めにご連絡ください</li>
+                </ul>
+            </div>
+            
+            <div class="info-box">
+                <h3>キャンプ概要</h3>
+                <ul>
+                    <li><strong>日程:</strong> 2026年5月4日（月）〜 5月6日（水）</li>
+                    <li><strong>場所:</strong> 詳細は後日お知らせします</li>
+                </ul>
+            </div>
+            
+            <div class="contact">
+                <strong>お問い合わせ</strong>
+                ご質問やご不明な点がございましたら、<br>
+                教会までお気軽にお問い合わせください。
+            </div>
+            
+            <a href="churchCampApplication.html" class="btn-home">トップページに戻る</a>
+            <a href="https://www.mitakachurch.com/" class="btn-home" style="background: linear-gradient(90deg, #d32f2f 60%, #ff5252 100%); margin-left: 1rem;">三鷹福音教会サイトへ</a>
+        </div>
+    </main>
+    
+    <footer class="footer"><a href="https://www.mitakachurch.com/">三鷹福音教会</a></footer>
+</body>
+</html>
