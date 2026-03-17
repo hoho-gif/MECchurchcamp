@@ -586,8 +586,7 @@ table th, table td {
                     <span class="required">*</span>
                 </label>
                 <select name="GOBACK" id="GOBACK" required>
-                    <option value="none">参加状況を選択してください</option>
-                    <option value="All">全参加</option>
+                    <option value="All" selected>全参加</option>
                     <option value="MiddleCameBack">部分参加</option>
                 </select>
             </form>
@@ -1146,6 +1145,33 @@ async function nextpage() {
     if (!firstKana)  { alert('申込個人名（ふりがな）を入力してください。'); document.getElementById('first-kana').focus(); return; }
     if (!gender)     { alert('性別を選択してください。'); return; }
     if (!email)      { alert('メールアドレスを入力してください。'); document.getElementById('email-address').focus(); return; }
+
+    // ── 参加確定の場合のみ追加チェック ──
+    if (attendance === 'confirmed') {
+        const birthday    = document.getElementById('birthday')?.value.trim();
+        const age         = document.getElementById('age')?.value.trim();
+        const phone       = document.getElementById('phone-number')?.value.trim();
+        const zipcode     = document.getElementById('zipcode')?.value.trim();
+        const address     = document.getElementById('address')?.value.trim();
+        const addressNum  = document.getElementById('addressNum')?.value.trim();
+        const goback      = document.getElementById('GOBACK')?.value;
+
+        if (!birthday)   { alert('生年月日を入力してください。'); document.getElementById('birthday').focus(); return; }
+        if (!age)        { alert('年齢を入力してください。'); document.getElementById('age').focus(); return; }
+        if (!phone)      { alert('電話番号を入力してください。'); document.getElementById('phone-number').focus(); return; }
+        if (!zipcode)    { alert('郵便番号を入力してください。'); document.getElementById('zipcode').focus(); return; }
+        if (!address)    { alert('住所を入力してください。'); document.getElementById('address').focus(); return; }
+        if (!addressNum) { alert('番地を入力してください。'); document.getElementById('addressNum').focus(); return; }
+        if (!goback || goback === 'none') { alert('参加状況を選択してください。'); document.getElementById('GOBACK').focus(); return; }
+
+        // 部分参加の場合は参加日・帰宅日もチェック
+        if (goback === 'MiddleCameBack') {
+            const startDate = document.getElementById('startDate')?.value;
+            const endDate   = document.getElementById('endDate')?.value;
+            if (!startDate) { alert('参加日を入力してください。'); document.getElementById('startDate').focus(); return; }
+            if (!endDate)   { alert('帰宅日を入力してください。'); document.getElementById('endDate').focus(); return; }
+        }
+    }
 
     const attendanceMap = { confirmed: '参加確定', undecided: '参加未定', absent: '不参加' };
 
