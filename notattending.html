@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>送信完了 - 教会キャンプ2026</title>
+    <style>
+        :root {
+            --main-bg: #e8e5ce;
+            --main-color: #333;
+            --accent: #1976d2;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: #faf9f6;
+            color: var(--main-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--main-bg);
+            padding: 2rem 0;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            padding: 3rem 2rem;
+            max-width: 560px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* アイコン円 */
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.4rem;
+            animation: scaleIn 0.5s ease-out;
+        }
+        .icon-circle.undecided { background: #fff8e1; border: 3px solid #f9a825; }
+        .icon-circle.absent    { background: #ffebee; border: 3px solid #d32f2f; }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to   { transform: scale(1); }
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        h1.undecided { color: #f9a825; }
+        h1.absent    { color: #d32f2f; }
+
+        .message {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+
+        .info-box {
+            border-radius: 8px;
+            padding: 1.4rem 1.6rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+        .info-box.undecided { background: #fff8e1; border: 1.5px solid #f9a825; }
+        .info-box.absent    { background: #ffebee; border: 1.5px solid #d32f2f; }
+
+        .info-box h3 {
+            margin-top: 0;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+        .info-box.undecided h3 { color: #7a5c00; }
+        .info-box.absent    h3 { color: #b71c1c; }
+
+        .info-box p {
+            margin: 0;
+            line-height: 1.8;
+            font-size: 0.98rem;
+        }
+        .info-box.undecided p { color: #7a5c00; }
+        .info-box.absent    p { color: #b71c1c; }
+
+        .contact {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+            font-size: 0.95rem;
+            color: #666;
+        }
+        .contact strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--main-color);
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.9rem 2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.25s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #1565c0 60%, #1976d2 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(25,118,210,0.3);
+        }
+        .btn-church {
+            background: linear-gradient(90deg, #d32f2f 60%, #ff5252 100%);
+            color: #fff;
+        }
+        .btn-church:hover {
+            background: linear-gradient(90deg, #b71c1c 60%, #d32f2f 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(211,47,47,0.3);
+        }
+
+        footer {
+            background: var(--main-bg);
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        footer a { color: var(--main-color); text-decoration: none; }
+
+        @media (max-width: 600px) {
+            .card { padding: 2rem 1.2rem; }
+            h1 { font-size: 1.5rem; }
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <header>教会キャンプ2026年</header>
+
+    <main>
+        <div class="card">
+            <div class="icon-circle" id="iconCircle"></div>
+            <h1 id="pageTitle"></h1>
+            <p class="message" id="pageMessage"></p>
+            <div class="info-box" id="infoBox">
+                <h3 id="infoTitle"></h3>
+                <p id="infoBody"></p>
+            </div>
+            <div class="contact">
+                <strong>お問い合わせ</strong>
+                ご質問やご不明な点がございましたら、教会までお気軽にお問い合わせください。
+            </div>
+            <div class="btn-group">
+                <a href="index.html" class="btn btn-primary">トップページに戻る</a>
+                <a href="https://www.mitakachurch.com/" class="btn btn-church">三鷹福音教会サイトへ</a>
+            </div>
+        </div>
+    </main>
+
+    <footer><a href="https://www.mitakachurch.com/">三鷹福音教会</a></footer>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const attendance = params.get('attendance') || 'undecided';
+        const name = params.get('name') ? decodeURIComponent(params.get('name')) : '';
+
+        const iconCircle = document.getElementById('iconCircle');
+        const pageTitle  = document.getElementById('pageTitle');
+        const pageMsg    = document.getElementById('pageMessage');
+        const infoBox    = document.getElementById('infoBox');
+        const infoTitle  = document.getElementById('infoTitle');
+        const infoBody   = document.getElementById('infoBody');
+
+        if (attendance === 'absent') {
+            iconCircle.textContent = '❌';
+            iconCircle.classList.add('absent');
+            pageTitle.textContent  = '不参加の受け付けが完了しました';
+            pageTitle.classList.add('absent');
+            pageMsg.textContent    = (name ? `${name}さん、` : '') + 'ご連絡いただきありがとうございます。\n不参加のご回答を受け付けました。\nまたの機会にぜひご参加ください。';
+            infoBox.classList.add('absent');
+            infoTitle.textContent  = '今後について';
+            infoBody.textContent   = '今後キャンプへのご参加をご検討の際は、お気軽にご連絡ください。教会でみなさまをお待ちしております。';
+        } else {
+            iconCircle.textContent = '🤔';
+            iconCircle.classList.add('undecided');
+            pageTitle.textContent  = '参加未定の受け付けが完了しました';
+            pageTitle.classList.add('undecided');
+            pageMsg.textContent    = (name ? `${name}さん、` : '') + 'ご連絡いただきありがとうございます。\n参加未定のご回答を受け付けました。\n参加が確定しましたら、再度フォームよりお申し込みください。';
+            infoBox.classList.add('undecided');
+            infoTitle.textContent  = '参加が確定したら';
+            infoBody.textContent   = 'キャンプ申し込みフォームより「新規申し込み」→「参加確定」を選択して、改めてお申し込みください。締め切りまでにお申し込みいただけますようお願いいたします。';
+        }
+    </script>
+</body>
+</html>
