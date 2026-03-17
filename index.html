@@ -449,7 +449,7 @@ table th, table td {
         <button class="font-btn size-s" onclick="setFontSize('small')"  id="fs-small">小</button>
         <button class="font-btn size-m active" onclick="setFontSize('medium')" id="fs-medium">標準</button>
         <button class="font-btn size-l" onclick="setFontSize('large')"  id="fs-large">大</button>
-        <button class="font-btn size-xl" onclick="setFontSize('xlarge')" id="fs-xlarge">特大></button>
+        <button class="font-btn size-xl" onclick="setFontSize('xlarge')" id="fs-xlarge">特大</button>
     </div>
 
     <main>
@@ -1085,7 +1085,7 @@ function rempeople() {
 }
 
 // ── Google Apps Script への送信 ──
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1yyDZXOvTEmfTwvbSJ6gEA8Ik1x5w8lTFNHPUHSXpho2oFeIq_8ljgybeigQHUAr-/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTZ8OIIug3KaFA17fHwaLrV43BryfQE3qD3lCkc92JBLE30GVQvEWROZPk_JEXOTmo/exec';
 
 // フォーム上の全inputを name: value の形で収集（GASがJSONを直接パース）
 function collectFormData() {
@@ -1131,6 +1131,21 @@ async function nextpage() {
         alert('参加状況を選択してください。');
         return;
     }
+
+    // ── 必須項目チェック（参加状況に関わらず全員必須） ──
+    const familyName  = document.getElementById('family-name')?.value.trim();
+    const familyKana  = document.getElementById('family-kana')?.value.trim();
+    const firstName   = document.getElementById('first-name')?.value.trim();
+    const firstKana   = document.getElementById('first-kana')?.value.trim();
+    const gender      = document.querySelector('input[name="gender"]:checked')?.value;
+    const email       = document.getElementById('email-address')?.value.trim();
+
+    if (!familyName) { alert('申込家族名を入力してください。'); document.getElementById('family-name').focus(); return; }
+    if (!familyKana) { alert('申込家族名（ふりがな）を入力してください。'); document.getElementById('family-kana').focus(); return; }
+    if (!firstName)  { alert('申込個人名を入力してください。'); document.getElementById('first-name').focus(); return; }
+    if (!firstKana)  { alert('申込個人名（ふりがな）を入力してください。'); document.getElementById('first-kana').focus(); return; }
+    if (!gender)     { alert('性別を選択してください。'); return; }
+    if (!email)      { alert('メールアドレスを入力してください。'); document.getElementById('email-address').focus(); return; }
 
     const attendanceMap = { confirmed: '参加確定', undecided: '参加未定', absent: '不参加' };
 
