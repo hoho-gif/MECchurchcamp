@@ -6,28 +6,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>教会キャンプ申し込みフォーム</title>
     <style>
-        :root {
+    :root {
     --main-bg: #e8e5ce;
     --main-color: #333;
     --accent: #1976d2;
     --border-radius: 8px;
+    --base-font-size: 16px;
 }
+
+/* フォントサイズ切替 */
+html { font-size: var(--base-font-size); }
+html.font-small  { --base-font-size: 13px; }
+html.font-medium { --base-font-size: 16px; }
+html.font-large  { --base-font-size: 20px; }
+html.font-xlarge { --base-font-size: 24px; }
 
 body {
     margin: 0;
     font-family: system-ui, sans-serif;
     background: #faf9f6;
     color: var(--main-color);
+    font-size: 1rem;
 }
 
 header {
     background: var(--main-bg);
-    padding: 2rem 0;
+    padding: 2rem 0 1rem;
     text-align: center;
     font-size: 2rem;
     font-weight: bold;
+    margin-bottom: 0;
+}
+
+/* ── フォントサイズ切替バー ── */
+.font-size-bar {
+    background: var(--main-bg);
+    padding: 0.5rem 1rem 0.8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #ccc8a0;
     margin-bottom: 2rem;
 }
+
+.font-size-bar span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+    margin-right: 0.3rem;
+}
+
+.font-btn {
+    border: 2px solid #bbb;
+    background: #fff;
+    border-radius: 2em;
+    padding: 0.3em 0.9em;
+    cursor: pointer;
+    font-weight: 700;
+    color: #444;
+    transition: all 0.15s;
+    line-height: 1.2;
+}
+
+.font-btn:hover {
+    border-color: var(--accent);
+    background: #e3f0fd;
+    color: var(--accent);
+}
+
+.font-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 8px #1976d240;
+}
+
+.font-btn.size-s  { font-size: 0.78rem; }
+.font-btn.size-m  { font-size: 0.95rem; }
+.font-btn.size-l  { font-size: 1.15rem; }
+.font-btn.size-xl { font-size: 1.35rem; }
 
 main {
     display: flex;
@@ -58,10 +117,12 @@ label {
     display: block;
     margin-bottom: 0.2em;
     font-weight: 500;
+    font-size: 1rem;
 }
 
 input[type="text"],
 input[type="email"],
+input[type="tel"],
 input[type="number"],
 input[type="date"],
 select {
@@ -89,6 +150,7 @@ select {
     gap: 1.2em;
     margin-bottom: 1.2em;
     font-size: 0.95em;
+    flex-wrap: wrap;
 }
 
 .entry-radio {
@@ -160,6 +222,7 @@ td {
     padding: 0.5em 0.7em;
     text-align: center;
     border-bottom: 1px solid #eee;
+    font-size: 1rem;
 }
 
 th {
@@ -214,6 +277,21 @@ tr:last-child td {
     fill: currentColor;
 }
 
+/* 幼児オプション */
+#childOptions {
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #f0f7ff;
+}
+#childOptions p {
+    font-size: 1rem;
+}
+#childOptions label {
+    font-size: 1rem;
+}
+
 @media (max-width: 700px) {
     main {
         flex-direction: column;
@@ -233,15 +311,16 @@ tr:last-child td {
     .footer {
         font-size: 1rem;
     }
+
+    .font-size-bar {
+        gap: 0.4rem;
+    }
 }
 
-/* --- Mobile-friendly improvements --- */
-/* avoid footer overlapping content on small screens */
 body {
     padding-bottom: 5rem;
 }
 
-/* make dynamically generated meal tables horizontally scrollable */
 #dynamicMealTable,
 #allJoinMealTable {
     overflow-x: auto;
@@ -252,7 +331,6 @@ body {
     min-width: 420px;
 }
 
-/* per-applicant meal tables: allow scroll and ensure min width */
 .partialFields > div {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -261,93 +339,158 @@ body {
     min-width: 320px;
 }
 
-/* slightly larger radio targets for touch */
 .center input[type="radio"] {
     width: 1.4em;
     height: 1.4em;
     transform: scale(1.05);
 }
 
-/* keep form controls full-width on small screens for easier tapping */
 @media (max-width: 700px) {
     input[type="text"],
     input[type="email"],
     input[type="number"],
     input[type="date"],
     select {
-                width: 100%;
-                max-width: 100%;
-            }
+        width: 100%;
+        max-width: 100%;
+    }
 
-            .modern-btn {
-            width: 100%;
-                justify-content: center;
-            }
+    .modern-btn {
+        width: 100%;
+        justify-content: center;
+    }
 
-        table {
-            font-size: 0.95em;
-            }
+    table {
+        font-size: 0.95em;
+    }
 
-            th, td {
-                padding: 0.45em 0.6em;
-            }
-        }
+    th, td {
+        padding: 0.45em 0.6em;
+    }
+}
 
-    /* small improvement: reduce table padding slightly on all sizes to avoid overflow */
-            table th, table td {
-            white-space: nowrap;
-        }
+table th, table td {
+    white-space: nowrap;
+}
 
-        /* make interactive labels easier to tap inside the form area */
-        .center label[for] {
-            padding: 0.15em 0;
-        }
+.center label[for] {
+    padding: 0.15em 0;
+}
     </style>
 </head>
 
 <body>
     <header>教会キャンプ2026年</header>
+
+    <!-- ── フォントサイズ切替バー ── -->
+    <div class="font-size-bar" role="group" aria-label="文字サイズ切替">
+        <span>👁 文字サイズ：</span>
+        <button class="font-btn size-s" onclick="setFontSize('small')"  id="fs-small">小</button>
+        <button class="font-btn size-m active" onclick="setFontSize('medium')" id="fs-medium">標準</button>
+        <button class="font-btn size-l" onclick="setFontSize('large')"  id="fs-large">大</button>
+        <button class="font-btn size-xl" onclick="setFontSize('xlarge')" id="fs-xlarge">特大<br><span style="font-size:0.65em;font-weight:400;">（老眼用）</span></button>
+    </div>
+
     <main>
-        <div class="side"></div>
+        <div class="side">
+        </div>
         <section class="center">
             <form autocomplete="on">
-                <label for="family-name">申込家族名<span class="required">*</span></label>
+                <label for="family-name">申込家族名
+                    <span class="required">*</span>
+                </label>
                 <input type="text" id="family-name" name="family-name" maxlength="50" placeholder="田中" required>
-                <label for="family-kana">申込家族名（ふりがな）<span class="required">*</span></label>
+                <label for="family-kana">申込家族名（ふりがな）
+                    <span class="required">*</span>
+                </label>
                 <input type="text" id="family-kana" name="family-kana" maxlength="50" placeholder="たなか" required>
-                <label for="first-name">申込個人名<span class="required">*</span></label>
+                <label for="first-name">申込個人名
+                    <span class="required">*</span>
+                </label>
                 <input type="text" id="first-name" name="first-name" maxlength="50" placeholder="太郎" required>
-                <label for="first-kana">申込個人名（ふりがな）<span class="required">*</span></label>
+                <label for="first-kana">申込個人名（ふりがな）
+                    <span class="required">*</span>
+                </label>
                 <input type="text" id="first-kana" name="first-kana" maxlength="50" placeholder="たろう" required>
             </form>
             <form>
-                <label>性別<span class="required">*</span></label>
-                <label><input type="radio" name="gender" value="male" required> 男性</label>
-                <label><input type="radio" name="gender" value="female"> 女性</label>
+                <label>性別
+                    <span class="required">*</span>
+                </label>
+                <label>
+                    <input type="radio" name="gender" value="male" required>男性</label>
+                <label>
+                    <input type="radio" name="gender" value="female">女性</label>
+            </form>
+            <form autocomplete="on">
+                <label for="email-address">メールアドレス
+                    <span class="required">*</span>
+                </label>
+                <input type="email" id="email-address" name="email-address" placeholder="xxxx@example.com" required>
             </form>
             <form>
-                <label for="birthday">生年月日<span class="required">*</span></label>
+                <label for="birthday">生年月日
+                    <span class="required">*</span>
+                </label>
                 <input type="date" name="birthday" id="birthday" value="2000-01-01" required>
             </form>
             <form>
-                <label for="age">年齢<span class="required">*</span></label>
+                <label for="age">年齢
+                    <span class="required">*</span>
+                </label>
                 <input type="number" name="age" id="age" value="26" max="120" required>
-                <span id="ageAtCamp" style="margin-left:10px; color:var(--accent);"></span>
+                <span id="ageAtCamp" style="margin-left:10px; color:var(--accent);">
+                </span>
+            </form>
+            <form>
+                <label>年齢区分
+                    <span class="required">*</span>
+                </label>
+                <label>
+                    <input type="radio" name="ageGroup" value="child" required onclick="toggleChildOptions(true)">幼児
+                </label>
+                <label>
+                    <input type="radio" name="ageGroup" value="youth" onclick="toggleChildOptions(false)">小学生
+                </label>
+                <label>
+                    <input type="radio" name="ageGroup" value="adult" checked onclick="toggleChildOptions(false)">大人
+                </label>
+
+                <!-- 幼児用追加質問 -->
+                <div id="childOptions" style="display:none;">
+                    <p style="font-weight: bold; margin-bottom: 8px;">🍼 幼児向けオプション</p>
+                    <label style="display: block; margin-bottom: 6px;">
+                        <input type="checkbox" name="childBedding" value="yes">
+                        幼児用の寝具を申し込む
+                    </label>
+                    <label style="display: block;">
+                        <input type="checkbox" name="childMeal" value="yes">
+                        幼児用の食事を申し込む
+                    </label>
+                </div>
             </form>
             <form autocomplete="on">
-                <label for="email-address">メールアドレス<span class="required">*</span></label>
-                <input type="email" id="email-address" name="email-address" placeholder="xxxx@example.com" required>
-                <label for="phone-number">電話番号<span class="required">*</span></label>
-                <input type="number" id="phone-number" name="phone-number" placeholder="09012345678" pattern="\d{10,11}" required>
+                <label for="phone-number">電話番号
+                    <span class="required">*</span>
+                </label>
+                <input type="tel" id="phone-number" name="phone-number" placeholder="09012345678" pattern="\d{10,11}" required>
             </form>
-            <form form autocomplete="on">
-                <label for="zipcode">郵便番号<span class="required">*</span></label>
+            <form autocomplete="on">
+                <label for="zipcode">郵便番号
+                    <span class="required">*</span>
+                </label>
                 <input type="text" id="zipcode" name="zipcode" placeholder="1800013" pattern="\d{7}" required>
-                <label for="address">住所<span class="required">*</span></label>
+                <label for="address">住所
+                    <span class="required">*</span>
+                </label>
                 <input type="text" id="address" name="address" placeholder="東京都武蔵野市西久保" required>
-                <label for="addressNum">番地<span class="required">*</span></label>
+                <label for="addressNum">番地
+                    <span class="required">*</span>
+                </label>
                 <input type="text" id="addressNum" name="addressNum" placeholder="1-12-2" required>
-                <label for="GOBACK">参加状況を教えてください<span class="required">*</span></label>
+                <label for="GOBACK">参加状況を教えてください
+                    <span class="required">*</span>
+                </label>
                 <select name="GOBACK" id="GOBACK" required>
                     <option value="none">参加状況を選択してください</option>
                     <option value="All">全参加</option>
@@ -356,76 +499,109 @@ body {
             </form>
             <form>
                 <div id="partialFields">
-                    <label for="startDate">参加日<span class="required">*</span></label>
+                    <label for="startDate">参加日
+                        <span class="required">*</span>
+                    </label>
                     <input type="date" id="startDate" value="2026-05-04" min="2026-05-04" max="2026-05-06" required>
-                    <label id="first-meal-label" for="first-meal">到着時間を教えてください<span class="required">*</span></label>
-                    <select name="first-meal" id="first-meal" required></select>
-                    <label for="endDate">帰宅日<span class="required">*</span></label>
+                    <label id="first-meal-label" for="first-meal">到着時間を教えてください
+                        <span class="required">*</span>
+                    </label>
+                    <select name="first-meal" id="first-meal" required>
+                    </select>
+                    <label for="endDate">帰宅日
+                        <span class="required">*</span>
+                    </label>
                     <input type="date" id="endDate" value="2026-05-06" min="2026-05-04" max="2026-05-06" required>
-                    <label id="last-meal-label" for="last-meal">帰宅時間を教えてください<span class="required">*</span></label>
-                    <select name="last-meal" id="last-meal" required></select>
+                    <label id="last-meal-label" for="last-meal">帰宅時間を教えてください
+                        <span class="required">*</span>
+                    </label>
+                    <select name="last-meal" id="last-meal" required>
+                    </select>
                     <div id="whichFoodStay">
-                        <p>どの食事を申し込みますか？ <span class="required">*</span></p>
-                        <div id="dynamicMealTable"></div>
+                        <p>どの食事を申し込みますか？
+                            <span class="required">*</span>
+                        </p>
+                        <div id="dynamicMealTable">
+                        </div>
                     </div>
                 </div>
                 <div id="partialFields2">
-                    <p style="text-align:center; font-weight:bold; color:var(--accent);">
-                        キャンプ期間：2026年5月04日:朝食後～2026年5月06日:昼食後
-                    </p>
+                    <p style="text-align:center; font-weight:bold; color:var(--accent);">キャンプ期間：2026年5月04日:朝食後～2026年5月06日:昼食後</p>
                     <form id="allJoinFoodStay">
-                        <div id="allJoinMealTable"></div>
+                        <div id="allJoinMealTable">
+                        </div>
                     </form>
                 </div>
                 <div id="entryTypeGroup" class="entry-radio-group">
-                    <label class="entry-radio"><input type="radio" name="entryType" id="radio-new" value="new"
-                            checked><span>新規申し込み</span></label>
-                    <label class="entry-radio"><input type="radio" name="entryType" id="radio-edit"
-                            value="edit"><span>申し込み変更</span></label>
-                    <label class="entry-radio"><input type="radio" name="entryType" id="radio-cancel"
-                            value="cancel"><span>全キャンセル</span></label>
+                    <label class="entry-radio">
+                        <input type="radio" name="entryType" id="radio-new" value="new" checked>
+                        <span>新規申し込み</span>
+                    </label>
+                    <label class="entry-radio">
+                        <input type="radio" name="entryType" id="radio-edit" value="edit">
+                        <span>申し込み変更</span>
+                    </label>
+                    <label class="entry-radio">
+                        <input type="radio" name="entryType" id="radio-cancel" value="cancel">
+                        <span>全キャンセル</span>
+                    </label>
                 </div>
                 <div id="partialFields3" style="display:none; margin:1em 0;">
                     <p>同上の参加日数の申込者を増やしますか？</p>
-                    <button type="button" onclick="addpeople()" value="AddPeople" class="modern-btn"
-                        style="margin-bottom:0.5em;">
-                        <svg viewBox="0 0 20 20">
-                            <circle cx="10" cy="10" r="9" stroke="white" stroke-width="2" fill="none" />
-                            <line x1="10" y1="5" x2="10" y2="15" stroke="white" stroke-width="2" />
-                            <line x1="5" y1="10" x2="15" y2="10" stroke="white" stroke-width="2" />
-                        </svg>
-                        申込者を増やす
-                    </button>
-                    <button type="button" onclick="rempeople()" value="RemPeople" class="modern-btn"
-                        style="background:linear-gradient(90deg,#d32f2f 60%,#ff5252 100%);margin-left:0.7em;margin-bottom:0.5em;">
-                        <svg viewBox="0 0 20 20">
-                            <circle cx="10" cy="10" r="9" stroke="white" stroke-width="2" fill="none" />
-                            <line x1="5" y1="10" x2="15" y2="10" stroke="white" stroke-width="2" />
-                        </svg>
-                        申込者を減らす
-                    </button>
+                    <button type="button" onclick="addpeople()" value="AddPeople" class="modern-btn" style="margin-bottom:0.5em;">
+                        <svg viewbox="0 0 20 20">
+                            <circle cx="10" cy="10" r="9" stroke="white" stroke-width="2" fill="none"></circle>
+                            <line x1="10" y1="5" x2="10" y2="15" stroke="white" stroke-width="2"></line>
+                            <line x1="5" y1="10" x2="15" y2="10" stroke="white" stroke-width="2"></line>
+                        </svg>申込者を増やす</button>
+                    <button type="button" onclick="rempeople()" value="RemPeople" class="modern-btn" style="background:linear-gradient(90deg,#d32f2f 60%,#ff5252 100%);margin-left:0.7em;margin-bottom:0.5em;">
+                        <svg viewbox="0 0 20 20">
+                            <circle cx="10" cy="10" r="9" stroke="white" stroke-width="2" fill="none"></circle>
+                            <line x1="5" y1="10" x2="15" y2="10" stroke="white" stroke-width="2"></line>
+                        </svg>申込者を減らす</button>
                 </div>
                 <!-- extra applicants will be generated here by JS -->
-                <div id="extraApplicants"></div>
+                <div id="extraApplicants">
+                </div>
                 <label for="Allergy">アレルギー（可能な限り対応させていただきます）</label>
                 <input type="text" id="Allergy" name="Allergy" maxlength="200" placeholder="例：卵、乳、小麦アレルギー">
                 <label for="Others">その他</label>
                 <p>その他宿泊の希望内容があればご記入ください（※ご希望に添いかねる場合もありますので、あらかじめご了承ください）</p>
-                <input type="text" id="Others" name="Others" maxlength="200" placeholder="その他連絡事項など"><br>
+                <input type="text" id="Others" name="Others" maxlength="200" placeholder="その他連絡事項など">
+                <br>
             </form>
-            <button type="button" onclick="nextpage()" value="nextpage" class="modern-btn"
-                style="width:100%;margin-top:1.5em;font-size:1.15em;">
-                <svg viewBox="0 0 20 20">
-                    <path d="M2 10l16-7-7 16-2-7-7-2z" fill="white" />
-                </svg>
-                次へ進む
-            </button>
+            <button type="button" onclick="nextpage()" value="nextpage" class="modern-btn" style="width:100%;margin-top:1.5em;font-size:1.15em;">
+                <svg viewbox="0 0 20 20">
+                    <path d="M2 10l16-7-7 16-2-7-7-2z" fill="white"></path>
+                </svg>次へ進む</button>
         </section>
-        <div class="side"></div>
+        <div class="side">
+        </div>
     </main>
     <footer class="footer">三鷹福音教会</footer>
     <script>
-            'use strict';
+    'use strict';
+
+// ── フォントサイズ切替 ──
+const fontSizes = ['small', 'medium', 'large', 'xlarge'];
+function setFontSize(size) {
+    const html = document.documentElement;
+    fontSizes.forEach(s => html.classList.remove('font-' + s));
+    html.classList.add('font-' + size);
+    fontSizes.forEach(s => {
+        const btn = document.getElementById('fs-' + s);
+        if (btn) btn.classList.toggle('active', s === size);
+    });
+    try { localStorage.setItem('campFormFontSize', size); } catch(e) {}
+}
+// ページ読み込み時に保存済みサイズを復元
+(function() {
+    try {
+        const saved = localStorage.getItem('campFormFontSize');
+        if (saved && fontSizes.includes(saved)) setFontSize(saved);
+    } catch(e) {}
+})();
+
 // 郵便番号→住所自動入力
 const fetchAddress = zipCode => {
     if (zipCode.length === 7) {
@@ -484,6 +660,14 @@ function updateExtraAges() {
     }
 }
 
+function toggleChildOptions(show) {
+    document.getElementById('childOptions').style.display = show ? 'block' : 'none';
+    if (!show) {
+        document.querySelector('[name="childBedding"]').checked = false;
+        document.querySelector('[name="childMeal"]').checked = false;
+    }
+}
+
 // render applicant blocks dynamically (4..10)
 function renderExtraApplicants(start = 4, end = 14) {
     const container = document.getElementById('extraApplicants');
@@ -499,6 +683,8 @@ function renderExtraApplicants(start = 4, end = 14) {
                 <label>性別<span class="required">*</span></label>
                 <label><input type="radio" name="gender${i}" value="male" required> 男性</label>
                 <label><input type="radio" name="gender${i}" value="female"> 女性</label>
+                <label for="phone-number${i}">電話番号<span class="required">*</span></label>
+                <input type="tel" id="phone-number${i}" name="phone-number${i}" maxlength="15" placeholder="090-1234-5678" required>
                 <label for="birthday${i}">生年月日<span class="required">*</span></label>
                 <input type="date" name="birthday${i}" id="birthday${i}" value="2000-01-01" required>
                 <label for="age${i}">年齢<span class="required">*</span></label>
@@ -580,14 +766,12 @@ function updateEntryType() {
     } else {
         goback.style.display = '';
         if (gobackLabel) gobackLabel.style.display = '';
-        // 新規申し込み時のみ申込者追加ボタン表示
         if (type === 'new') {
             document.getElementById('partialFields3').style.display = 'block';
         } else {
             document.getElementById('partialFields3').style.display = 'none';
             document.getElementById('partialFields4').style.display = 'none';
         }
-        // 状態に応じて部分/全参加のフォームを再表示
         if (goback.value === 'MiddleCameBack') {
             partialFields.style.display = 'block';
             partialFields2.style.display = 'none';
@@ -601,8 +785,8 @@ function updateEntryType() {
     }
 }
 document.getElementById('entryTypeGroup').addEventListener('change', updateEntryType);
-// 初期化
 window.addEventListener('DOMContentLoaded', updateEntryType);
+
 // 部分参加 食事・宿泊ラジオボタン生成
 const generateMealTable = () => {
     const start = document.getElementById('startDate')?.value || '2026-05-04';
@@ -626,10 +810,8 @@ const generateMealTable = () => {
     days.forEach((date, i) => {
         const mmdd = `${date.getMonth() + 1}/${date.getDate()}`;
         mealDefs.forEach(meal => {
-            // 最終日のlastMealが"brackfeast"（朝食前）の場合、その日の昼食・夕食・宿泊は表示しない
             if (i === days.length - 1 && lastMeal === 'brackfeast') {
                 if (meal.key === 'breakfast') {
-                    // 朝食は表示
                 } else {
                     return;
                 }
@@ -656,6 +838,7 @@ const generateMealTable = () => {
     html += '</tbody></table>';
     document.getElementById('dynamicMealTable').innerHTML = html;
 };
+
 // 全参加 食事・宿泊ラジオボタン生成
 const generateAllJoinMealTable = () => {
     const days = [
@@ -677,6 +860,7 @@ const generateAllJoinMealTable = () => {
     html += '</tbody></table>';
     document.getElementById('allJoinMealTable').innerHTML = html;
 };
+
 // 到着・帰宅時間の選択肢を日付ごとに動的生成
 function updateMealSelect(dateId, selectId) {
     const mealOptionsByDate = {
@@ -709,9 +893,9 @@ function updateMealSelect(dateId, selectId) {
         select.appendChild(option);
     });
 }
+
 // イベント登録
 window.addEventListener('DOMContentLoaded', () => {
-    // generate extra applicant blocks and wire up their age listeners
     renderExtraApplicants(4, 10);
     updateExtraAges();
     updateMealSelect('startDate', 'first-meal');
@@ -730,17 +914,8 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('first-meal').addEventListener('change', generateMealTable);
     document.getElementById('last-meal').addEventListener('change', generateMealTable);
 });
-// 「全キャンセル」ボタンで下のフォームを非表示
-function handleCancelAll() {
-    // 参加状況セレクトとその下のフォームのみ非表示
-    document.getElementById('GOBACK').style.display = 'none';
-    document.querySelector('label[for="GOBACK"]').style.display = 'none';
-    document.getElementById('partialFields').style.display = 'none';
-    document.getElementById('partialFields2').style.display = 'none';
-}
-document.getElementById('btn-cancel').addEventListener('click', handleCancelAll);
+
 function addpeople() {
-    // 申込者を増やすボタンで#partialFields4～#partialFields14を順に表示
     for (let i = 4; i <= 14; i++) {
         const el = document.getElementById('partialFields' + i);
         if (el && el.style.display === 'none') {
@@ -751,7 +926,6 @@ function addpeople() {
 }
 
 function rempeople() {
-    // 申込者を減らすボタンで#partialFields14～#partialFields4を逆順で一番最後に表示されているものを非表示
     for (let i = 14; i >= 4; i--) {
         const el = document.getElementById('partialFields' + i);
         if (el && el.style.display === 'block') {
@@ -760,191 +934,7 @@ function rempeople() {
         }
     }
 }
-
-// nextpage関数とフォーム復元機能を追加
-
-// URLパラメータからフォームデータを復元する関数
-function restoreFormFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    
-    // パラメータがない場合は何もしない
-    if (params.toString() === '') return;
-    
-    // テキスト、メール、数値、日付入力を復元
-    params.forEach((value, key) => {
-        const element = document.getElementById(key);
-        if (element) {
-            if (element.type === 'radio') {
-                // ラジオボタンは name で探す
-                const radio = document.querySelector(`input[name="${key}"][value="${value}"]`);
-                if (radio) radio.checked = true;
-            } else if (element.tagName === 'SELECT') {
-                element.value = value;
-            } else {
-                element.value = value;
-            }
-        }
-    });
-    
-    // ラジオボタンの復元（name属性で検索）
-    params.forEach((value, key) => {
-        const radios = document.querySelectorAll(`input[name="${key}"]`);
-        if (radios.length > 0) {
-            radios.forEach(radio => {
-                if (radio.value === value) {
-                    radio.checked = true;
-                }
-            });
-        }
-    });
-}
-
-// 次へ進むボタンの処理
-function nextpage() {
-    // 必須項目のチェック
-    const requiredFields = [
-        'family-name', 'family-kana', 'first-name', 'first-kana', 
-        'birthday', 'age', 'email-address', 'zipcode', 'address', 'addressNum'
-    ];
-    
-    for (const field of requiredFields) {
-        const el = document.getElementById(field);
-        if (!el || !el.value) {
-            alert('必須項目を全て入力してください');
-            return;
-        }
-    }
-    
-    // 性別チェック
-    if (!document.querySelector('input[name="gender"]:checked')) {
-        alert('性別を選択してください');
-        return;
-    }
-    
-    // 申込種別チェック
-    const entryType = document.querySelector('input[name="entryType"]:checked');
-    if (!entryType) {
-        alert('申込種別を選択してください');
-        return;
-    }
-    
-    // 申込種別が「全キャンセル」でない場合のみ参加状況をチェック
-    if (entryType.value !== 'cancel') {
-        const goback = document.getElementById('GOBACK');
-        if (!goback || goback.value === 'none' || goback.value === '') {
-            alert('参加状況を選択してください');
-            return;
-        }
-    }
-    
-    // フォームデータを収集
-    const params = new URLSearchParams();
-    
-    // テキスト入力、日付、数値、メールなど
-    document.querySelectorAll('input[type="text"], input[type="email"], input[type="number"], input[type="date"]').forEach(el => {
-        if (el.id && el.value) {
-            params.append(el.id, el.value);
-        }
-    });
-    
-    // ラジオボタン（有効・無効の両方）
-    document.querySelectorAll('input[type="radio"]:checked').forEach(el => {
-        params.append(el.name, el.value);
-    });
-    
-    // セレクトボックス
-    document.querySelectorAll('select').forEach(el => {
-        if (el.id && el.value) {
-            params.append(el.id, el.value);
-        }
-    });
-    
-    // 確認ページに遷移
-    window.location.href = 'confirmation.html?' + params.toString();
-}
-
-// DOMContentLoaded時の処理を更新
-window.addEventListener('DOMContentLoaded', () => {
-    // URLパラメータからフォームデータを復元
-    restoreFormFromURL();
-    
-    // 既存の初期化
-    renderExtraApplicants(4, 10);
-    updateExtraAges();
-    updateAgeAtCamp();
-    
-    // 参加状況の初期化
-    const gobackSelect = document.getElementById('GOBACK');
-    if (gobackSelect && gobackSelect.value) {
-        toggleFields();
-        
-        if (gobackSelect.value === 'MiddleCameBack') {
-            const startDate = document.getElementById('startDate');
-            const endDate = document.getElementById('endDate');
-            
-            if (startDate && startDate.value) {
-                updateMealSelect('startDate', 'first-meal');
-            }
-            if (endDate && endDate.value) {
-                updateMealSelect('endDate', 'last-meal');
-            }
-            
-            // 少し遅延させて食事テーブルを生成（select要素の準備を待つ）
-            setTimeout(() => {
-                generateMealTable();
-            }, 100);
-        } else if (gobackSelect.value === 'All') {
-            generateAllJoinMealTable();
-        }
-    } else {
-        // デフォルトのテーブル生成
-        updateMealSelect('startDate', 'first-meal');
-        updateMealSelect('endDate', 'last-meal');
-        generateMealTable();
-        generateAllJoinMealTable();
-    }
-    
-    // 申込種別の表示を復元
-    const entryTypeChecked = document.querySelector('input[name="entryType"]:checked');
-    if (entryTypeChecked) {
-        updateEntryType();
-        
-        // 新規申し込みで追加申込者がいる場合、表示を復元
-        if (entryTypeChecked.value === 'new') {
-            const partialFields3 = document.getElementById('partialFields3');
-            if (partialFields3) {
-                partialFields3.style.display = 'block';
-            }
-            
-            for (let i = 4; i <= 14; i++) {
-                const nameField = document.getElementById(`first-name${i}`);
-                if (nameField && nameField.value) {
-                    const partialField = document.getElementById(`partialFields${i}`);
-                    if (partialField) {
-                        partialField.style.display = 'block';
-                    }
-                }
-            }
-        }
-    }
-    
-    // イベントリスナーの登録
-    document.getElementById('GOBACK').addEventListener('change', toggleFields);
-    document.getElementById('entryTypeGroup').addEventListener('change', updateEntryType);
-    
-    document.getElementById('startDate').addEventListener('change', () => {
-        updateMealSelect('startDate', 'first-meal');
-        generateMealTable();
-    });
-    document.getElementById('endDate').addEventListener('change', () => {
-        updateMealSelect('endDate', 'last-meal');
-        generateMealTable();
-    });
-    document.getElementById('first-meal').addEventListener('change', generateMealTable);
-    document.getElementById('last-meal').addEventListener('change', generateMealTable);
-});
     </script>
 </body>
-
 
 </html>
