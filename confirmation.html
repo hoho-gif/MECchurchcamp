@@ -355,67 +355,66 @@
             
             document.getElementById('mealsSection').style.display = 'block';
             
-            // 申込フォームと同じスタイルのテーブルを作成
             let html = '<table class="meal-table"><thead><tr><th></th><th>○申し込む</th><th>×申し込まない</th></tr></thead><tbody>';
             
-            // 参加日範囲を取得
-            const startDate = data.startDate ? new Date(data.startDate) : null;
-            const endDate = data.endDate ? new Date(data.endDate) : null;
-            const firstMeal = data['first-meal'] || 'lunch';
-            const lastMeal = data['last-meal'] || 'lunch';
+            // 日付をYYYY-MM-DD文字列のまま比較（タイムゾーンズレ回避）
+            const startDateStr = data.startDate || '';
+            const endDateStr   = data.endDate   || '';
+            const firstMeal    = data['first-meal'] || 'lunch';
+            const lastMeal     = data['last-meal']  || 'lunch';
             
-            // 日付マッピング
+            // 日付マッピング（文字列で管理）
             const dateMap = {
-                '1': { date: new Date('2026-05-04'), label: '5月4日' },
-                '2': { date: new Date('2026-05-05'), label: '5月5日' },
-                '3': { date: new Date('2026-05-06'), label: '5月6日' }
+                1: { str: '2026-05-04', label: '5月4日' },
+                2: { str: '2026-05-05', label: '5月5日' },
+                3: { str: '2026-05-06', label: '5月6日' }
             };
             
-            // 全日程・全食事の組み合わせを作成
             const allMeals = [];
             for (let dayIndex = 1; dayIndex <= 3; dayIndex++) {
                 ['朝食', '昼食', '夕食', '宿泊'].forEach((mealType, mealOrder) => {
-                    // 最終日（5月6日）の宿泊はスキップ
+                    // 最終日の宿泊はスキップ
                     if (dayIndex === 3 && mealType === '宿泊') return;
                     
-                    const key = `${mealType}[${dayIndex}]`;
+                    const key   = `${mealType}[${dayIndex}]`;
                     const value = data[key] || 'no';
                     
-                    // 参加日範囲内かどうかを判定
-                    let isInParticipationRange = false;
-                    if (data.GOBACK === 'MiddleCameBack' && startDate && endDate) {
-                        const currentDate = dateMap[dayIndex].date;
-                        const isInDateRange = currentDate >= startDate && currentDate <= endDate;
-                        const isStartDay = currentDate.getTime() === startDate.getTime();
-                        const isEndDay = currentDate.getTime() === endDate.getTime();
-                        
-                        isInParticipationRange = isInDateRange;
-                        
-                        // 初日の到着時間より前は範囲外
-                        if (isStartDay) {
-                            if (firstMeal === 'lunch' && mealType === '朝食') isInParticipationRange = false;
-                            if (firstMeal === 'dinner' && (mealType === '朝食' || mealType === '昼食')) isInParticipationRange = false;
-                            if (firstMeal === 'afterdinner' && (mealType === '朝食' || mealType === '昼食' || mealType === '夕食')) isInParticipationRange = false;
+                    let isInRange = false;
+
+                    if (data.GOBACK === 'All') {
+                        // 全参加：すべて範囲内
+                        isInRange = true;
+
+                    } else if (data.GOBACK === 'MiddleCameBack' && startDateStr && endDateStr) {
+                        const dayStr    = dateMap[dayIndex].str;
+                        const inRange   = dayStr >= startDateStr && dayStr <= endDateStr;
+                        const isStart   = dayStr === startDateStr;
+                        const isEnd     = dayStr === endDateStr;
+
+                        isInRange = inRange;
+
+                        // 初日：到着時間より前の食事は範囲外
+                        if (isStart) {
+                            if (firstMeal === 'brackfeast' && mealType === '朝食') isInRange = false; // 朝食前到着→朝食なし（朝食前という表示だから朝食は食べない）
+                            if (firstMeal === 'lunch'      && mealType === '朝食') isInRange = false;
+                            if (firstMeal === 'dinner'     && (mealType === '朝食' || mealType === '昼食')) isInRange = false;
+                            if (firstMeal === 'afterdinner'&& (mealType === '朝食' || mealType === '昼食' || mealType === '夕食')) isInRange = false;
                         }
-                        
-                        // 最終日の帰宅時間より後は範囲外
-                        if (isEndDay) {
-                            if (lastMeal === 'beforbrackfeast') isInParticipationRange = false;
-                            if (lastMeal === 'brackfeast' && (mealType === '昼食' || mealType === '夕食' || mealType === '宿泊')) isInParticipationRange = false;
-                            if (lastMeal === 'lunch' && (mealType === '夕食' || mealType === '宿泊')) isInParticipationRange = false;
-                            if (lastMeal === 'dinner' && mealType === '宿泊') isInParticipationRange = false;
+
+                        // 最終日：帰宅時間より後の食事は範囲外
+                        if (isEnd) {
+                            if (lastMeal === 'beforbrackfeast') isInRange = false;
+                            if (lastMeal === 'brackfeast' && (mealType === '昼食' || mealType === '夕食' || mealType === '宿泊')) isInRange = false;
+                            if (lastMeal === 'lunch'      && (mealType === '夕食' || mealType === '宿泊')) isInRange = false;
+                            if (lastMeal === 'dinner'     &&  mealType === '宿泊') isInRange = false;
                         }
-                    } else if (data.GOBACK === 'All') {
-                        // 全参加の場合は全て範囲内
-                        isInParticipationRange = true;
                     }
                     
                     allMeals.push({
-                        label: `${dateMap[dayIndex].label}${mealType}`,
-                        value: value,
-                        order: dayIndex * 10 + mealOrder,
-                        isBold: mealType === '宿泊',
-                        isInRange: isInParticipationRange
+                        label:   `${dateMap[dayIndex].label}${mealType}`,
+                        value:   value,
+                        isBold:  mealType === '宿泊',
+                        isInRange
                     });
                 });
             }
@@ -423,18 +422,17 @@
             // テーブル行を生成
             allMeals.forEach(item => {
                 const isYes = item.value === 'yes';
-                const isNo = item.value === 'no';
+                const isNo  = item.value === 'no';
                 
-                // 参加範囲外で申し込まない項目のみグレー背景
-                // 参加範囲内で自分で申し込まないを選択した項目は白背景
-                const rowStyle = (!item.isInRange && isNo) ? ' style="background:#f5f5f5;"' : '';
-                const labelStyle = (!item.isInRange && isNo) ? ' style="color:#999;"' : '';
-                const labelCell = item.isBold ? `<b>${item.label}</b>` : item.label;
+                // 範囲外 かつ ×の行はグレー
+                const rowStyle   = (!item.isInRange && isNo)  ? ' style="background:#f5f5f5;"' : '';
+                const labelStyle = (!item.isInRange && isNo)  ? ' style="color:#999;"'         : '';
+                const labelCell  = item.isBold ? `<b>${item.label}</b>` : item.label;
                 
                 html += `<tr${rowStyle}>
                     <td${labelStyle}>${labelCell}</td>
                     <td>${isYes ? '<span class="meal-yes">○</span>' : ''}</td>
-                    <td>${isNo ? '<span class="meal-no">×</span>' : ''}</td>
+                    <td>${isNo  ? '<span class="meal-no">×</span>'  : ''}</td>
                 </tr>`;
             });
             
@@ -516,7 +514,7 @@
             loadingMsg.style.display = 'block';
             
             // Google Apps ScriptのウェブアプリURLをここに設定
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTZ8OIIug3KaFA17fHwaLrV43BryfQE3qD3lCkc92JBLE30GVQvEWROZPk_JEXOTmo/exec';
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1yyDZXOvTEmfTwvbSJ6gEA8Ik1x5w8lTFNHPUHSXpho2oFeIq_8ljgybeigQHUAr-/exec';
             
             try {
                 const response = await fetch(SCRIPT_URL, {
