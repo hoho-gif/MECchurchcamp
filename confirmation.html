@@ -1,1204 +1,555 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>教会キャンプ申し込みフォーム</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教会キャンプ申し込み確認</title>
     <style>
-    :root {
-    --main-bg: #e8e5ce;
-    --main-color: #333;
-    --accent: #1976d2;
-    --border-radius: 8px;
-    --base-font-size: 16px;
-}
-
-/* フォントサイズ切替 */
-html { font-size: var(--base-font-size); }
-html.font-small  { --base-font-size: 13px; }
-html.font-medium { --base-font-size: 16px; }
-html.font-large  { --base-font-size: 20px; }
-html.font-xlarge { --base-font-size: 24px; }
-
-body {
-    margin: 0;
-    font-family: system-ui, sans-serif;
-    background: #faf9f6;
-    color: var(--main-color);
-    font-size: 1rem;
-}
-
-header {
-    background: var(--main-bg);
-    padding: 2rem 0 1rem;
-    text-align: center;
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 0;
-}
-
-/* ── フォントサイズ切替バー ── */
-.font-size-bar {
-    background: var(--main-bg);
-    padding: 0.5rem 1rem 0.8rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    border-bottom: 1px solid #ccc8a0;
-    margin-bottom: 2rem;
-}
-
-.font-size-bar span {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #555;
-    margin-right: 0.3rem;
-}
-
-.font-btn {
-    border: 2px solid #bbb;
-    background: #fff;
-    border-radius: 2em;
-    padding: 0.3em 0.9em;
-    cursor: pointer;
-    font-weight: 700;
-    color: #444;
-    transition: all 0.15s;
-    line-height: 1.2;
-}
-
-.font-btn:hover {
-    border-color: var(--accent);
-    background: #e3f0fd;
-    color: var(--accent);
-}
-
-.font-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-    box-shadow: 0 2px 8px #1976d240;
-}
-
-.font-btn.size-s  { font-size: 0.78rem; }
-.font-btn.size-m  { font-size: 0.95rem; }
-.font-btn.size-l  { font-size: 1.15rem; }
-.font-btn.size-xl { font-size: 1.35rem; }
-
-main {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 80vh;
-    margin-bottom: 4rem;
-}
-
-.side {
-    flex: 1 1 0;
-}
-
-.center {
-    flex: 0 1 480px;
-    background: #fff;
-    border-radius: var(--border-radius);
-    box-shadow: 0 2px 8px #0001;
-    padding: 2rem 2.5vw;
-    margin: 0 1vw;
-}
-
-form {
-    margin-bottom: 1.5rem;
-}
-
-label {
-    display: block;
-    margin-bottom: 0.2em;
-    font-weight: 500;
-    font-size: 1rem;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="number"],
-input[type="date"],
-select {
-    width: 90%;
-    max-width: 350px;
-    padding: 0.5em;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: var(--border-radius);
-    margin-bottom: 0.7em;
-    box-sizing: border-box;
-    text-align: center;
-}
-
-#age {
-    width: 60px;
-    min-width: 0;
-    max-width: 80px;
-}
-
-/* 申込種別ラジオボタンをカード風に */
-.entry-radio-group {
-    display: flex;
-    justify-content: center;
-    gap: 1.2em;
-    margin-bottom: 1.2em;
-    font-size: 0.95em;
-    flex-wrap: wrap;
-}
-
-.entry-radio {
-    display: flex;
-    align-items: center;
-    background: #f5f5f5;
-    border: 2px solid #ccc;
-    border-radius: 1.5em;
-    padding: 0.4em 1em;
-    font-size: 0.98em;
-    font-weight: 500;
-    cursor: pointer;
-    transition: border 0.2s, background 0.2s, color 0.2s;
-    box-shadow: 0 1px 4px #0001;
-}
-
-.entry-radio span {
-    font-size: 0.97em;
-}
-
-.entry-radio input[type="radio"] {
-    accent-color: var(--accent);
-    margin-right: 0.5em;
-}
-
-.entry-radio:hover,
-.entry-radio input[type="radio"]:focus+span {
-    border-color: var(--accent);
-    background: #e3f0fd;
-}
-
-.entry-radio input[type="radio"]:checked+span {
-    color: var(--accent);
-    font-weight: bold;
-    border-color: var(--accent);
-}
-
-.required {
-    color: #d32f2f;
-    margin-left: 0.2em;
-}
-
-.large-object {
-    transform: scale(1.3);
-    margin: 0 0.3em;
-}
-
-.partialFields, #partialFields, #partialFields2, #partialFields3 {
-    display: none;
-    margin-top: 1em;
-    padding: 1em;
-    border: 1px solid #ccc;
-    border-radius: var(--border-radius);
-    background: #f7f6f2;
-}
-
-table {
-    border-collapse: collapse;
-    margin: 1em auto 0 auto;
-    width: 100%;
-    max-width: 400px;
-    background: #fff;
-    border-radius: var(--border-radius);
-    overflow: hidden;
-}
-
-th,
-td {
-    padding: 0.5em 0.7em;
-    text-align: center;
-    border-bottom: 1px solid #eee;
-    font-size: 1rem;
-}
-
-th {
-    background: var(--main-bg);
-    font-weight: 600;
-}
-
-tr:last-child td {
-    border-bottom: none;
-}
-
-.footer {
-    background: var(--main-bg);
-    padding: 1.5rem 0;
-    text-align: center;
-    font-size: 1.1rem;
-    position: fixed;
-    width: 100vw;
-    left: 0;
-    bottom: 0;
-    z-index: 10;
-}
-
-.modern-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5em;
-    background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
-    color: #fff;
-    border: none;
-    border-radius: 2em;
-    padding: 0.7em 1.7em;
-    font-size: 1.08em;
-    font-weight: 600;
-    box-shadow: 0 2px 8px #1976d230;
-    cursor: pointer;
-    transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-    outline: none;
-}
-
-.modern-btn:hover,
-.modern-btn:focus {
-    background: linear-gradient(90deg, #1565c0 60%, #1976d2 100%);
-    box-shadow: 0 4px 16px #1976d250;
-    transform: translateY(-2px) scale(1.04);
-}
-
-.modern-btn svg {
-    width: 1.2em;
-    height: 1.2em;
-    vertical-align: middle;
-    fill: currentColor;
-}
-
-/* ── 参加状況ラジオ ── */
-.attendance-radio-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.8em;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-
-.attendance-radio {
-    display: flex;
-    align-items: center;
-    border: 2px solid #ccc;
-    border-radius: 1.5em;
-    padding: 0.5em 1.2em;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-    background: #f5f5f5;
-    box-shadow: 0 1px 4px #0001;
-    gap: 0.4em;
-}
-
-.attendance-radio input[type="radio"] {
-    accent-color: var(--accent);
-}
-
-.attendance-confirmed:has(input:checked) {
-    background: #e8f5e9;
-    border-color: #388e3c;
-    color: #256029;
-}
-.attendance-undecided:has(input:checked) {
-    background: #fff8e1;
-    border-color: #f9a825;
-    color: #7a5c00;
-}
-.attendance-absent:has(input:checked) {
-    background: #ffebee;
-    border-color: #d32f2f;
-    color: #b71c1c;
-}
-
-.attendance-radio:hover {
-    border-color: var(--accent);
-    background: #e3f0fd;
-}
-
-/* 参加確定以外のメッセージボックス */
-#attendanceMessage.msg-undecided {
-    background: #fff8e1;
-    border: 1.5px solid #f9a825;
-    color: #7a5c00;
-}
-#attendanceMessage.msg-absent {
-    background: #ffebee;
-    border: 1.5px solid #d32f2f;
-    color: #b71c1c;
-}
-
-/* 幼児オプション */
-#childOptions {
-    margin-top: 12px;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background: #f0f7ff;
-}
-#childOptions p {
-    font-size: 1rem;
-}
-#childOptions label {
-    font-size: 1rem;
-}
-
-@media (max-width: 700px) {
-    main {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .side {
-        display: none;
-    }
-
-    .center {
-        margin: 0;
-        border-radius: 0;
-        box-shadow: none;
-    }
-
-    .footer {
-        font-size: 1rem;
-    }
-
-    .font-size-bar {
-        gap: 0.4rem;
-    }
-}
-
-body {
-    padding-bottom: 5rem;
-}
-
-#dynamicMealTable,
-#allJoinMealTable {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-#dynamicMealTable table,
-#allJoinMealTable table {
-    min-width: 420px;
-}
-
-.partialFields > div {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-.partialFields table {
-    min-width: 320px;
-}
-
-.center input[type="radio"] {
-    width: 1.4em;
-    height: 1.4em;
-    transform: scale(1.05);
-}
-
-@media (max-width: 700px) {
-    input[type="text"],
-    input[type="email"],
-    input[type="number"],
-    input[type="date"],
-    select {
-        width: 100%;
-        max-width: 100%;
-    }
-
-    .modern-btn {
-        width: 100%;
-        justify-content: center;
-    }
-
-    table {
-        font-size: 0.95em;
-    }
-
-    th, td {
-        padding: 0.45em 0.6em;
-    }
-}
-
-table th, table td {
-    white-space: nowrap;
-}
-
-.center label[for] {
-    padding: 0.15em 0;
-}
+        :root {
+            --main-bg: #e8e5ce;
+            --main-color: #333;
+            --accent: #1976d2;
+            --border-radius: 8px;
+        }
+        
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: #faf9f6;
+            color: var(--main-color);
+            padding-bottom: 5rem;
+        }
+        
+        header {
+            background: var(--main-bg);
+            padding: 2rem 0;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .section {
+            background: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .section h2 {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+        
+        .info-row {
+            display: flex;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            min-width: 180px;
+            color: #555;
+        }
+        
+        .info-value {
+            flex: 1;
+            color: var(--main-color);
+        }
+        
+        .applicant-block {
+            background: #f7f6f2;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .applicant-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-back {
+            background: #757575;
+            color: #fff;
+        }
+        
+        .btn-back:hover {
+            background: #616161;
+            transform: translateY(-2px);
+        }
+        
+        .btn-submit {
+            background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+            color: #fff;
+        }
+        
+        .btn-submit:hover {
+            background: linear-gradient(90deg, #1565c0 60%, #1976d2 100%);
+            transform: translateY(-2px);
+        }
+        
+        .btn-submit:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .meal-table {
+            margin: 1rem 0;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .meal-table th,
+        .meal-table td {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        
+        .meal-table th {
+            background: var(--main-bg);
+            font-weight: 600;
+        }
+        
+        .meal-yes {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        
+        .meal-no {
+            color: #d32f2f;
+        }
+        
+        .footer {
+            background: var(--main-bg);
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 1.1rem;
+            position: fixed;
+            width: 100vw;
+            left: 0;
+            bottom: 0;
+        }
+        
+        #loadingMessage {
+            display: none;
+            text-align: center;
+            color: var(--accent);
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        
+        @media (max-width: 700px) {
+            .info-row {
+                flex-direction: column;
+            }
+            
+            .info-label {
+                margin-bottom: 0.3rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
-
 <body>
-    <header>教会キャンプ2026年</header>
-
-    <!-- ── フォントサイズ切替バー ── -->
-    <div class="font-size-bar" role="group" aria-label="文字サイズ切替">
-        <span>👁 文字サイズ：</span>
-        <button class="font-btn size-s" onclick="setFontSize('small')"  id="fs-small">小</button>
-        <button class="font-btn size-m active" onclick="setFontSize('medium')" id="fs-medium">標準</button>
-        <button class="font-btn size-l" onclick="setFontSize('large')"  id="fs-large">大</button>
-        <button class="font-btn size-xl" onclick="setFontSize('xlarge')" id="fs-xlarge">特大<br><span style="font-size:0.65em;font-weight:400;">（老眼用）</span></button>
+    <header>教会キャンプ2026年 - 申し込み確認</header>
+    
+    <div class="container">
+        <div class="section">
+            <h2>申込者情報</h2>
+            <div id="mainApplicantInfo"></div>
+        </div>
+        
+        <div class="section">
+            <h2>参加情報</h2>
+            <div id="participationInfo"></div>
+        </div>
+        
+        <div class="section" id="mealsSection" style="display:none;">
+            <h2>食事・宿泊</h2>
+            <div id="mealsInfo"></div>
+        </div>
+        
+        <div id="additionalApplicants"></div>
+        
+        <div class="section">
+            <h2>その他</h2>
+            <div id="otherInfo"></div>
+        </div>
+        
+        <div id="loadingMessage">送信中...</div>
+        
+        <div class="button-group">
+            <button class="btn btn-back" onclick="goBack()">戻る</button>
+            <button class="btn btn-submit" id="submitBtn" onclick="submitToGoogleSheets()">送信する</button>
+        </div>
     </div>
-
-    <main>
-        <div class="side">
-        </div>
-        <section class="center">
-            <form autocomplete="on">
-                <label for="family-name">申込家族名
-                    <span class="required">*</span>
-                </label>
-                <input type="text" id="family-name" name="family-name" maxlength="50" placeholder="田中" required>
-                <label for="family-kana">申込家族名（ふりがな）
-                    <span class="required">*</span>
-                </label>
-                <input type="text" id="family-kana" name="family-kana" maxlength="50" placeholder="たなか" required>
-                <label for="first-name">申込個人名
-                    <span class="required">*</span>
-                </label>
-                <input type="text" id="first-name" name="first-name" maxlength="50" placeholder="太郎" required>
-                <label for="first-kana">申込個人名（ふりがな）
-                    <span class="required">*</span>
-                </label>
-                <input type="text" id="first-kana" name="first-kana" maxlength="50" placeholder="たろう" required>
-            </form>
-            <form>
-                <label>性別
-                    <span class="required">*</span>
-                </label>
-                <label>
-                    <input type="radio" name="gender" value="male" required>男性</label>
-                <label>
-                    <input type="radio" name="gender" value="female">女性</label>
-            </form>
-            <form autocomplete="on">
-                <label for="email-address">メールアドレス
-                    <span class="required">*</span>
-                </label>
-                <input type="email" id="email-address" name="email-address" placeholder="xxxx@example.com" required>
-            </form>
-
-            <!-- ── 参加状況確認 ── -->
-            <form id="attendanceForm">
-                <label>参加状況の確認
-                    <span class="required">*</span>
-                </label>
-                <div class="attendance-radio-group">
-                    <label class="attendance-radio attendance-confirmed">
-                        <input type="radio" name="attendance" value="confirmed" onchange="updateAttendance()">
-                        <span>✅ 参加確定</span>
-                    </label>
-                    <label class="attendance-radio attendance-undecided">
-                        <input type="radio" name="attendance" value="undecided" onchange="updateAttendance()">
-                        <span>🤔 参加未定</span>
-                    </label>
-                    <label class="attendance-radio attendance-absent">
-                        <input type="radio" name="attendance" value="absent" onchange="updateAttendance()">
-                        <span>❌ 不参加</span>
-                    </label>
-                </div>
-            </form>
-
-            <!-- 参加確定でない場合の送信ボタン -->
-            <div id="earlySubmitSection" style="display:none;">
-                <div id="attendanceMessage" style="padding:1em; border-radius:8px; margin-bottom:1em; text-align:center; font-weight:bold;"></div>
-                <button type="button" onclick="nextpage()" class="modern-btn" style="width:100%;font-size:1.15em;">
-                    <svg viewbox="0 0 20 20"><path d="M2 10l16-7-7 16-2-7-7-2z" fill="white"></path></svg>
-                    フォームを送信する
-                </button>
-            </div>
-
-            <!-- 参加確定の場合のみ表示される残りの質問 -->
-            <div id="confirmedOnlySection" style="display:none;">
-            <form>
-                <label for="birthday">生年月日
-                    <span class="required">*</span>
-                </label>
-                <input type="date" name="birthday" id="birthday" value="2000-01-01" required>
-            </form>
-            <form>
-                <label for="age">年齢
-                    <span class="required">*</span>
-                </label>
-                <input type="number" name="age" id="age" value="26" max="120" required>
-                <span id="ageAtCamp" style="margin-left:10px; color:var(--accent);">
-                </span>
-            </form>
-            <form>
-                <label>年齢区分
-                    <span class="required">*</span>
-                </label>
-                <label>
-                    <input type="radio" name="ageGroup" value="child" required onclick="toggleChildOptions(true)">幼児
-                </label>
-                <label>
-                    <input type="radio" name="ageGroup" value="youth" onclick="toggleChildOptions(false)">小学生
-                </label>
-                <label>
-                    <input type="radio" name="ageGroup" value="adult" checked onclick="toggleChildOptions(false)">大人
-                </label>
-
-                <!-- 幼児用追加質問 -->
-                <div id="childOptions" style="display:none;">
-                    <p style="font-weight: bold; margin-bottom: 8px;">🍼 幼児向けオプション</p>
-                    <label style="display: block; margin-bottom: 6px;">
-                        <input type="checkbox" name="childBedding" value="yes">
-                        幼児用の寝具を申し込む
-                    </label>
-                    <label style="display: block;">
-                        <input type="checkbox" name="childMeal" value="yes">
-                        幼児用の食事を申し込む
-                    </label>
-                </div>
-            </form>
-            <form autocomplete="on">
-                <label for="phone-number">電話番号
-                    <span class="required">*</span>
-                </label>
-                <input type="tel" id="phone-number" name="phone-number" placeholder="09012345678" pattern="\d{10,11}" required>
-            </form>
-            <form autocomplete="on">
-                <label for="zipcode">郵便番号
-                    <span class="required">*</span>
-                </label>
-                <input type="text" id="zipcode" name="zipcode" placeholder="1800013" pattern="\d{7}" required>
-                <label for="address">住所
-                    <span class="required">*</span>
-                </label>
-                <input type="text" id="address" name="address" placeholder="東京都武蔵野市西久保" required>
-                <label for="addressNum">番地
-                    <span class="required">*</span>
-                </label>
-                <input type="text" id="addressNum" name="addressNum" placeholder="1-12-2" required>
-                <label for="GOBACK">参加状況を教えてください
-                    <span class="required">*</span>
-                </label>
-                <select name="GOBACK" id="GOBACK" required>
-                    <option value="none">参加状況を選択してください</option>
-                    <option value="All">全参加</option>
-                    <option value="MiddleCameBack">部分参加</option>
-                </select>
-            </form>
-            <form>
-                <div id="partialFields">
-                    <label for="startDate">参加日
-                        <span class="required">*</span>
-                    </label>
-                    <input type="date" id="startDate" value="2026-05-04" min="2026-05-04" max="2026-05-06" required>
-                    <label id="first-meal-label" for="first-meal">到着時間を教えてください
-                        <span class="required">*</span>
-                    </label>
-                    <select name="first-meal" id="first-meal" required>
-                    </select>
-                    <label for="endDate">帰宅日
-                        <span class="required">*</span>
-                    </label>
-                    <input type="date" id="endDate" value="2026-05-06" min="2026-05-04" max="2026-05-06" required>
-                    <label id="last-meal-label" for="last-meal">帰宅時間を教えてください
-                        <span class="required">*</span>
-                    </label>
-                    <select name="last-meal" id="last-meal" required>
-                    </select>
-                    <div id="whichFoodStay">
-                        <p>どの食事を申し込みますか？
-                            <span class="required">*</span>
-                        </p>
-                        <div id="dynamicMealTable">
-                        </div>
-                    </div>
-                </div>
-                <div id="partialFields2">
-                    <p style="text-align:center; font-weight:bold; color:var(--accent);">キャンプ期間：2026年5月04日:朝食後～2026年5月06日:昼食後</p>
-                    <form id="allJoinFoodStay">
-                        <div id="allJoinMealTable">
-                        </div>
-                    </form>
-                </div>
-                <div id="entryTypeGroup" class="entry-radio-group">
-                    <label class="entry-radio">
-                        <input type="radio" name="entryType" id="radio-new" value="new" checked>
-                        <span>新規申し込み</span>
-                    </label>
-                    <label class="entry-radio">
-                        <input type="radio" name="entryType" id="radio-edit" value="edit">
-                        <span>申し込み変更</span>
-                    </label>
-                    <label class="entry-radio">
-                        <input type="radio" name="entryType" id="radio-cancel" value="cancel">
-                        <span>全キャンセル</span>
-                    </label>
-                </div>
-                <div id="partialFields3" style="display:none; margin:1em 0;">
-                    <p>同上の参加日数の申込者を増やしますか？</p>
-                    <button type="button" onclick="addpeople()" value="AddPeople" class="modern-btn" style="margin-bottom:0.5em;">
-                        <svg viewbox="0 0 20 20">
-                            <circle cx="10" cy="10" r="9" stroke="white" stroke-width="2" fill="none"></circle>
-                            <line x1="10" y1="5" x2="10" y2="15" stroke="white" stroke-width="2"></line>
-                            <line x1="5" y1="10" x2="15" y2="10" stroke="white" stroke-width="2"></line>
-                        </svg>申込者を増やす</button>
-                    <button type="button" onclick="rempeople()" value="RemPeople" class="modern-btn" style="background:linear-gradient(90deg,#d32f2f 60%,#ff5252 100%);margin-left:0.7em;margin-bottom:0.5em;">
-                        <svg viewbox="0 0 20 20">
-                            <circle cx="10" cy="10" r="9" stroke="white" stroke-width="2" fill="none"></circle>
-                            <line x1="5" y1="10" x2="15" y2="10" stroke="white" stroke-width="2"></line>
-                        </svg>申込者を減らす</button>
-                </div>
-                <!-- extra applicants will be generated here by JS -->
-                <div id="extraApplicants">
-                </div>
-                <label for="Allergy">アレルギー（可能な限り対応させていただきます）</label>
-                <input type="text" id="Allergy" name="Allergy" maxlength="200" placeholder="例：卵、乳、小麦アレルギー">
-                <label for="Others">その他</label>
-                <p>その他宿泊の希望内容があればご記入ください（※ご希望に添いかねる場合もありますので、あらかじめご了承ください）</p>
-                <input type="text" id="Others" name="Others" maxlength="200" placeholder="その他連絡事項など">
-                <br>
-            </form>
-            <button type="button" onclick="nextpage()" value="nextpage" class="modern-btn" style="width:100%;margin-top:1.5em;font-size:1.15em;">
-                <svg viewbox="0 0 20 20">
-                    <path d="M2 10l16-7-7 16-2-7-7-2z" fill="white"></path>
-                </svg>次へ進む</button>
-            </div><!-- /confirmedOnlySection -->
-        </section>
-        <div class="side">
-        </div>
-    </main>
-    <footer class="footer">三鷹福音教会</footer>
+    
+    <footer class="footer"><a href="https://www.mitakachurch.com/">三鷹福音教会</a></footer>
+    
     <script>
-    'use strict';
-
-// ── フォントサイズ切替 ──
-const fontSizes = ['small', 'medium', 'large', 'xlarge'];
-function setFontSize(size) {
-    const html = document.documentElement;
-    fontSizes.forEach(s => html.classList.remove('font-' + s));
-    html.classList.add('font-' + size);
-    fontSizes.forEach(s => {
-        const btn = document.getElementById('fs-' + s);
-        if (btn) btn.classList.toggle('active', s === size);
-    });
-    try { localStorage.setItem('campFormFontSize', size); } catch(e) {}
-}
-// ページ読み込み時に保存済みサイズを復元
-(function() {
-    try {
-        const saved = localStorage.getItem('campFormFontSize');
-        if (saved && fontSizes.includes(saved)) setFontSize(saved);
-    } catch(e) {}
-})();
-
-// ── 参加状況切替 ──
-function updateAttendance() {
-    const val = document.querySelector('input[name="attendance"]:checked')?.value;
-    const confirmedSection = document.getElementById('confirmedOnlySection');
-    const earlySubmit = document.getElementById('earlySubmitSection');
-    const msgBox = document.getElementById('attendanceMessage');
-
-    if (val === 'confirmed') {
-        confirmedSection.style.display = 'block';
-        earlySubmit.style.display = 'none';
-    } else if (val === 'undecided') {
-        confirmedSection.style.display = 'none';
-        earlySubmit.style.display = 'block';
-        msgBox.className = 'msg-undecided';
-        msgBox.textContent = '🤔 参加未定として送信します。確定しましたら再度ご連絡ください。';
-    } else if (val === 'absent') {
-        confirmedSection.style.display = 'none';
-        earlySubmit.style.display = 'block';
-        msgBox.className = 'msg-absent';
-        msgBox.textContent = '❌ 不参加として送信します。またの機会にぜひご参加ください。';
-    } else {
-        confirmedSection.style.display = 'none';
-        earlySubmit.style.display = 'none';
-    }
-}
-
-// 郵便番号→住所自動入力
-const fetchAddress = zipCode => {
-    if (zipCode.length === 7) {
-        fetch(`https://api.zipaddress.net/?zipcode=${zipCode}`, { mode: 'cors' })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('address').value = data.code === 200 ? data.data.fullAddress : '住所が見つかりません';
-            });
-    }
-};
-document.getElementById('zipcode').addEventListener('input', e => fetchAddress(e.target.value));
-
-// 生年月日→年齢自動計算
-const updateAgeAtCamp = () => {
-    const birthdayInput = document.getElementById('birthday');
-    const ageAtCampSpan = document.getElementById('ageAtCamp');
-    if (!birthdayInput || !ageAtCampSpan) return;
-    const birth = birthdayInput.value;
-    if (!birth) {
-        ageAtCampSpan.textContent = '';
-        return;
-    }
-    const campStart = new Date('2026-05-04');
-    const birthDate = new Date(birth);
-    let age = campStart.getFullYear() - birthDate.getFullYear();
-    const m = campStart.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && campStart.getDate() < birthDate.getDate())) {
-        age--;
-    }
-    ageAtCampSpan.textContent = `（キャンプ開始時: ${age}歳）`;
-    const ageInput = document.getElementById('age');
-    if (ageInput) ageInput.value = age;
-};
-document.getElementById('birthday').addEventListener('change', updateAgeAtCamp);
-window.addEventListener('DOMContentLoaded', updateAgeAtCamp);
-
-// 追加申込者欄の生年月日→年齢自動計算
-function updateExtraAges() {
-    for (let i = 5; i <= 15; i++) {
-        const b = document.getElementById('birthday' + i);
-        const a = document.getElementById('age' + i);
-        if (b && a) {
-            b.addEventListener('change', function () {
-                const birth = b.value;
-                if (!birth) { a.value = ''; return; }
-                const campStart = new Date('2026-05-04');
-                const birthDate = new Date(birth);
-                let age = campStart.getFullYear() - birthDate.getFullYear();
-                const m = campStart.getMonth() - birthDate.getMonth();
-                if (m < 0 || (m === 0 && campStart.getDate() < birthDate.getDate())) {
-                    age--;
-                }
-                a.value = age;
-            });
-        }
-    }
-}
-
-function toggleChildOptions(show) {
-    document.getElementById('childOptions').style.display = show ? 'block' : 'none';
-    if (!show) {
-        document.querySelector('[name="childBedding"]').checked = false;
-        document.querySelector('[name="childMeal"]').checked = false;
-    }
-}
-
-// render applicant blocks dynamically (5..15) — GASは first-name5〜 を参照
-function renderExtraApplicants(start = 5, end = 15) {
-    const container = document.getElementById('extraApplicants');
-    if (!container) return;
-    let html = '';
-    for (let i = start; i <= end; i++) {
-        html += `
-            <div id="partialFields${i}" class="partialFields" style="display:none; margin:1em 0;">
-                <label for="first-name${i}">申込個人名<span class="required">*</span></label>
-                <input type="text" id="first-name${i}" name="first-name${i}" maxlength="50" placeholder="太郎" required>
-                <label for="first-kana${i}">申込個人名（ふりがな）<span class="required">*</span></label>
-                <input type="text" id="first-kana${i}" name="first-kana${i}" maxlength="50" placeholder="たろう" required>
-                <label>性別<span class="required">*</span></label>
-                <label><input type="radio" name="gender${i}" value="male" required> 男性</label>
-                <label><input type="radio" name="gender${i}" value="female"> 女性</label>
-                <label for="phone-number${i}">電話番号<span class="required">*</span></label>
-                <input type="tel" id="phone-number${i}" name="phone-number${i}" maxlength="15" placeholder="090-1234-5678" required>
-                <label for="birthday${i}">生年月日<span class="required">*</span></label>
-                <input type="date" name="birthday${i}" id="birthday${i}" value="2000-01-01" required>
-                <label for="age${i}">年齢<span class="required">*</span></label>
-                <input type="number" name="age${i}" id="age${i}" value="30" max="120" required>
-                <label>年齢区分<span class="required">*</span></label>
-                <label><input type="radio" name="ageGroup${i}" value="child" required onchange="toggleChildOptions${i}(true)"> 幼児</label>
-                <label><input type="radio" name="ageGroup${i}" value="youth" onchange="toggleChildOptions${i}(false)"> 小学生</label>
-                <label><input type="radio" name="ageGroup${i}" value="adult" checked onchange="toggleChildOptions${i}(false)"> 大人</label>
-                <div id="childOptions${i}" style="display:none; margin-top:10px; padding:12px; border:1px solid #ccc; border-radius:6px; background:#f0f7ff;">
-                    <p style="font-weight:bold; margin-bottom:8px;">🍼 幼児向けオプション</p>
-                    <label style="display:block; margin-bottom:6px;">
-                        <input type="checkbox" name="childBedding${i}" value="yes"> 幼児用の寝具を申し込む
-                    </label>
-                    <label style="display:block;">
-                        <input type="checkbox" name="childMeal${i}" value="yes"> 幼児用の食事を申し込む
-                    </label>
-                </div>
-                <div style="margin-top:1em;">
-                    <table style="width:auto; margin:0.5em 0; border-collapse:collapse;">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>〇申し込む</th>
-                                <th>×申し込まない</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>朝食</td>
-                                <td><input type="radio" name="breakfast${i}" value="yes" checked></td>
-                                <td><input type="radio" name="breakfast${i}" value="no"></td>
-                            </tr>
-                            <tr>
-                                <td>昼食</td>
-                                <td><input type="radio" name="lunch${i}" value="yes" checked></td>
-                                <td><input type="radio" name="lunch${i}" value="no"></td>
-                            </tr>
-                            <tr>
-                                <td>夕食</td>
-                                <td><input type="radio" name="dinner${i}" value="yes" checked></td>
-                                <td><input type="radio" name="dinner${i}" value="no"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        `;
-    }
-    container.innerHTML = html;
-
-    // 各申込者ブロックに幼児オプション切替関数を動的生成
-    for (let i = start; i <= end; i++) {
-        window[`toggleChildOptions${i}`] = function(show) {
-            const el = document.getElementById(`childOptions${i}`);
-            if (!el) return;
-            el.style.display = show ? 'block' : 'none';
-            if (!show) {
-                const bed = document.querySelector(`[name="childBedding${i}"]`);
-                const mel = document.querySelector(`[name="childMeal${i}"]`);
-                if (bed) bed.checked = false;
-                if (mel) mel.checked = false;
+        // URLパラメータから申込データを取得
+        function getFormData() {
+            const params = new URLSearchParams(window.location.search);
+            const data = {};
+            for (const [key, value] of params.entries()) {
+                data[key] = decodeURIComponent(value);
             }
-        };
-    }
-}
-
-// 参加日が変わったら帰宅日のminを更新
-document.getElementById('startDate').addEventListener('change', e => {
-    const start = e.target.value;
-    const endInput = document.getElementById('endDate');
-    endInput.min = start;
-    if (endInput.value < start) endInput.value = start;
-});
-
-// 参加状況切替
-const toggleFields = () => {
-    const selectValue = document.getElementById('GOBACK').value;
-    const partialFields = document.getElementById('partialFields');
-    const partialFields2 = document.getElementById('partialFields2');
-    if (selectValue === 'MiddleCameBack') {
-        partialFields.style.display = 'block';
-        partialFields2.style.display = 'none';
-    } else if (selectValue === 'All') {
-        partialFields2.style.display = 'block';
-        partialFields.style.display = 'none';
-    } else {
-        partialFields.style.display = 'none';
-        partialFields2.style.display = 'none';
-    }
-};
-document.getElementById('GOBACK').addEventListener('change', toggleFields);
-
-// ラジオボタンで下のフォーム表示/非表示切り替え
-function updateEntryType() {
-    const type = document.querySelector('input[name="entryType"]:checked').value;
-    const goback = document.getElementById('GOBACK');
-    const gobackLabel = document.querySelector('label[for="GOBACK"]');
-    const partialFields = document.getElementById('partialFields');
-    const partialFields2 = document.getElementById('partialFields2');
-    if (type === 'cancel') {
-        goback.style.display = 'none';
-        if (gobackLabel) gobackLabel.style.display = 'none';
-        partialFields.style.display = 'none';
-        partialFields2.style.display = 'none';
-        document.getElementById('partialFields3').style.display = 'none';
-        document.getElementById('partialFields4').style.display = 'none';
-    } else {
-        goback.style.display = '';
-        if (gobackLabel) gobackLabel.style.display = '';
-        if (type === 'new') {
-            document.getElementById('partialFields3').style.display = 'block';
-        } else {
-            document.getElementById('partialFields3').style.display = 'none';
-            document.getElementById('partialFields4').style.display = 'none';
+            return data;
         }
-        if (goback.value === 'MiddleCameBack') {
-            partialFields.style.display = 'block';
-            partialFields2.style.display = 'none';
-        } else if (goback.value === 'All') {
-            partialFields2.style.display = 'block';
-            partialFields.style.display = 'none';
-        } else {
-            partialFields.style.display = 'none';
-            partialFields2.style.display = 'none';
+        
+        // メイン申込者情報を表示
+        function displayMainApplicant(data) {
+            const html = `
+                <div class="info-row">
+                    <div class="info-label">申込家族名</div>
+                    <div class="info-value">${data['family-name'] || ''} (${data['family-kana'] || ''})</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">申込個人名</div>
+                    <div class="info-value">${data['first-name'] || ''} (${data['first-kana'] || ''})</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">性別</div>
+                    <div class="info-value">${data.gender === 'male' ? '男性' : '女性'}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">生年月日</div>
+                    <div class="info-value">${data.birthday || ''}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">年齢</div>
+                    <div class="info-value">${data.age || ''}歳</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">メールアドレス</div>
+                    <div class="info-value">${data['email-address'] || ''}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">電話番号</div>
+                    <div class="info-value">${data['phone-number'] || ''}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">郵便番号</div>
+                    <div class="info-value">${data.zipcode || ''}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">住所</div>
+                    <div class="info-value">${data.address || ''}</div>
+                </div>
+            `;
+            document.getElementById('mainApplicantInfo').innerHTML = html;
         }
-    }
-}
-document.getElementById('entryTypeGroup').addEventListener('change', updateEntryType);
-window.addEventListener('DOMContentLoaded', updateEntryType);
-
-// 部分参加 食事・宿泊ラジオボタン生成
-const generateMealTable = () => {
-    const start = document.getElementById('startDate')?.value || '2026-05-04';
-    const end = document.getElementById('endDate')?.value || '2026-05-06';
-    const firstMeal = document.getElementById('first-meal')?.value || 'lunch';
-    const lastMeal = document.getElementById('last-meal')?.value || 'lunch';
-    const days = [];
-    let d = new Date(start);
-    const endD = new Date(end);
-    while (d <= endD) {
-        days.push(new Date(d));
-        d.setDate(d.getDate() + 1);
-    }
-    const mealDefs = [
-        { key: 'breakfast', label: '朝食' },
-        { key: 'lunch', label: '昼食' },
-        { key: 'dinner', label: '夕食' },
-        { key: 'stay', label: '宿泊' },
-    ];
-    let html = '<table><thead><tr><th></th><th>〇申し込む</th><th>×申し込まない</th></tr></thead><tbody>';
-    days.forEach((date, i) => {
-        const mmdd = `${date.getMonth() + 1}/${date.getDate()}`;
-        mealDefs.forEach(meal => {
-            if (i === days.length - 1 && lastMeal === 'brackfeast') {
-                if (meal.key === 'breakfast') {
-                } else {
-                    return;
+        
+        // 参加情報を表示
+        function displayParticipation(data) {
+            const entryTypeMap = {
+                'new': '新規申し込み',
+                'edit': '申し込み変更',
+                'cancel': '全キャンセル'
+            };
+            
+            const gobackMap = {
+                'All': '全参加',
+                'MiddleCameBack': '部分参加'
+            };
+            
+            let html = `
+                <div class="info-row">
+                    <div class="info-label">申込種別</div>
+                    <div class="info-value">${entryTypeMap[data.entryType] || ''}</div>
+                </div>
+            `;
+            
+            if (data.entryType !== 'cancel') {
+                html += `
+                    <div class="info-row">
+                        <div class="info-label">参加状況</div>
+                        <div class="info-value">${gobackMap[data.GOBACK] || ''}</div>
+                    </div>
+                `;
+                
+                if (data.GOBACK === 'MiddleCameBack') {
+                    html += `
+                        <div class="info-row">
+                            <div class="info-label">参加日</div>
+                            <div class="info-value">${data.startDate || ''}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">到着時間</div>
+                            <div class="info-value">${getMealTimeLabel(data['first-meal'])}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">帰宅日</div>
+                            <div class="info-value">${data.endDate || ''}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">帰宅時間</div>
+                            <div class="info-value">${getMealTimeLabel(data['last-meal'])}</div>
+                        </div>
+                    `;
                 }
             }
-            if (meal.key === 'stay' && i === days.length - 1) return;
-            if (i === 0) {
-                if (meal.key === 'breakfast' && firstMeal !== 'brackfeast') return;
-                if (meal.key === 'lunch' && (firstMeal === 'dinner' || firstMeal === 'afterdinner')) return;
-                if (meal.key === 'dinner' && firstMeal === 'afterdinner') return;
-            }
-            if (i === days.length - 1) {
-                if (meal.key === 'dinner' && (lastMeal === 'lunch' || lastMeal === 'breakfast' || lastMeal === 'beforbrackfeast')) return;
-                if (meal.key === 'lunch' && (lastMeal === 'breakfast' || lastMeal === 'beforbrackfeast')) return;
-                if (meal.key === 'breakfast' && lastMeal === 'beforbrackfeast') return;
-            }
-            const labelCell = meal.key === 'stay'
-                ? `<b>${mmdd}宿泊</b>`
-                : `${mmdd}${meal.label}`;
-            html += `<tr><td>${labelCell}</td>` +
-                `<td><input type="radio" name="${meal.key}[${i + 1}]" value="yes" class="large-object" checked></td>` +
-                `<td><input type="radio" name="${meal.key}[${i + 1}]" value="no" class="large-object"></td></tr>`;
-        });
-    });
-    html += '</tbody></table>';
-    document.getElementById('dynamicMealTable').innerHTML = html;
-};
-
-// 全参加 食事・宿泊ラジオボタン生成
-const generateAllJoinMealTable = () => {
-    const days = [
-        { date: '5/4', meals: ['昼食', '夕食', '宿泊'] },
-        { date: '5/5', meals: ['朝食', '昼食', '夕食', '宿泊'] },
-        { date: '5/6', meals: ['朝食', '昼食'] },
-    ];
-    let html = '<table><thead><tr><th></th><th>〇申し込む</th><th>×申し込まない</th></tr></thead><tbody>';
-    days.forEach((d, i) => {
-        d.meals.forEach(meal => {
-            const labelCell = meal === '宿泊'
-                ? `<b>${d.date}${meal}</b>`
-                : `${d.date}${meal}`;
-            html += `<tr><td>${labelCell}</td>` +
-                `<td><input type="radio" name="${meal}[${i + 1}]" value="yes" class="large-object" checked></td>` +
-                `<td><input type="radio" name="${meal}[${i + 1}]" value="no" class="large-object"></td></tr>`;
-        });
-    });
-    html += '</tbody></table>';
-    document.getElementById('allJoinMealTable').innerHTML = html;
-};
-
-// 到着・帰宅時間の選択肢を日付ごとに動的生成
-function updateMealSelect(dateId, selectId) {
-    const mealOptionsByDate = {
-        '2026-05-04': [
-            { value: 'lunch', label: '昼食前' },
-            { value: 'dinner', label: '夕食前' },
-            { value: 'afterdinner', label: '夕食後' }
-        ],
-        '2026-05-05': [
-            { value: 'brackfeast', label: '朝食前' },
-            { value: 'lunch', label: '昼食前' },
-            { value: 'dinner', label: '夕食前' },
-            { value: 'afterdinner', label: '夕食後' }
-        ],
-        '2026-05-06': [
-            { value: 'brackfeast', label: '昼食前' },
-            { value: 'lunch', label: '夕食前' }
-        ]
-    };
-    const date = document.getElementById(dateId)?.value;
-    const select = document.getElementById(selectId);
-    if (!date || !select) return;
-    const opts = mealOptionsByDate[date] || [];
-    select.innerHTML = '';
-    opts.forEach((opt, idx) => {
-        const option = document.createElement('option');
-        option.value = opt.value;
-        option.textContent = opt.label;
-        if (idx === 0) option.selected = true;
-        select.appendChild(option);
-    });
-}
-
-// イベント登録
-window.addEventListener('DOMContentLoaded', () => {
-    renderExtraApplicants(5, 15);
-    updateExtraAges();
-    updateMealSelect('startDate', 'first-meal');
-    updateMealSelect('endDate', 'last-meal');
-    generateMealTable();
-    generateAllJoinMealTable();
-    toggleFields();
-    document.getElementById('startDate').addEventListener('change', () => {
-        updateMealSelect('startDate', 'first-meal');
-        generateMealTable();
-    });
-    document.getElementById('endDate').addEventListener('change', () => {
-        updateMealSelect('endDate', 'last-meal');
-        generateMealTable();
-    });
-    document.getElementById('first-meal').addEventListener('change', generateMealTable);
-    document.getElementById('last-meal').addEventListener('change', generateMealTable);
-});
-
-function addpeople() {
-    for (let i = 5; i <= 15; i++) {
-        const el = document.getElementById('partialFields' + i);
-        if (el && el.style.display === 'none') {
-            el.style.display = 'block';
-            break;
+            
+            document.getElementById('participationInfo').innerHTML = html;
         }
-    }
-}
-
-function rempeople() {
-    for (let i = 15; i >= 5; i--) {
-        const el = document.getElementById('partialFields' + i);
-        if (el && el.style.display === 'block') {
-            el.style.display = 'none';
-            break;
+        
+        function getMealTimeLabel(value) {
+            const labels = {
+                'brackfeast': '朝食前',
+                'lunch': '昼食前',
+                'dinner': '夕食前',
+                'afterdinner': '夕食後',
+                'beforbrackfeast': '朝食前'
+            };
+            return labels[value] || value;
         }
-    }
-}
-
-// ── Google Apps Script への送信 ──
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTZ8OIIug3KaFA17fHwaLrV43BryfQE3qD3lCkc92JBLE30GVQvEWROZPk_JEXOTmo/exec';
-
-// フォーム上の全inputを name: value の形で収集（GASがJSONを直接パース）
-function collectFormData() {
-    const data = {};
-    document.querySelectorAll('input, select, textarea').forEach(el => {
-        if (!el.name) return;
-        if (el.type === 'radio') {
-            if (el.checked) data[el.name] = el.value;
-        } else if (el.type === 'checkbox') {
-            if (el.checked) data[el.name] = el.value;
-            else if (!(el.name in data)) data[el.name] = '';
-        } else {
-            data[el.name] = el.value;
-        }
-    });
-    return data;
-}
-
-function showOverlay(msg, isError) {
-    let overlay = document.getElementById('submitOverlay');
-    if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.id = 'submitOverlay';
-        overlay.style.cssText = `
-            position:fixed;inset:0;background:#0007;display:flex;
-            align-items:center;justify-content:center;z-index:9999;`;
-        document.body.appendChild(overlay);
-    }
-    overlay.innerHTML = `
-        <div style="background:#fff;border-radius:12px;padding:2rem 2.5rem;max-width:360px;
-                    text-align:center;box-shadow:0 4px 24px #0003;">
-            <div style="font-size:2.5rem;margin-bottom:0.5rem;">${isError ? '❌' : '✅'}</div>
-            <p style="font-size:1.1rem;font-weight:bold;margin:0 0 1rem;">${msg}</p>
-            <button onclick="document.getElementById('submitOverlay').style.display='none'"
-                class="modern-btn" style="margin:0 auto;">閉じる</button>
-        </div>`;
-    overlay.style.display = 'flex';
-}
-
-async function nextpage() {
-    const attendance = document.querySelector('input[name="attendance"]:checked')?.value;
-    if (!attendance) {
-        alert('参加状況を選択してください。');
-        return;
-    }
-
-    // ── 必須項目チェック（参加状況に関わらず全員必須） ──
-    const familyName  = document.getElementById('family-name')?.value.trim();
-    const familyKana  = document.getElementById('family-kana')?.value.trim();
-    const firstName   = document.getElementById('first-name')?.value.trim();
-    const firstKana   = document.getElementById('first-kana')?.value.trim();
-    const gender      = document.querySelector('input[name="gender"]:checked')?.value;
-    const email       = document.getElementById('email-address')?.value.trim();
-
-    if (!familyName) { alert('申込家族名を入力してください。'); document.getElementById('family-name').focus(); return; }
-    if (!familyKana) { alert('申込家族名（ふりがな）を入力してください。'); document.getElementById('family-kana').focus(); return; }
-    if (!firstName)  { alert('申込個人名を入力してください。'); document.getElementById('first-name').focus(); return; }
-    if (!firstKana)  { alert('申込個人名（ふりがな）を入力してください。'); document.getElementById('first-kana').focus(); return; }
-    if (!gender)     { alert('性別を選択してください。'); return; }
-    if (!email)      { alert('メールアドレスを入力してください。'); document.getElementById('email-address').focus(); return; }
-
-    const attendanceMap = { confirmed: '参加確定', undecided: '参加未定', absent: '不参加' };
-
-    if (attendance === 'confirmed') {
-        // 参加確定：全フィールドをURLパラメータに乗せてconfirmation.htmlへ遷移
-        const raw = {};
-        document.querySelectorAll('input, select, textarea').forEach(el => {
-            if (!el.name) return;
-            if (el.type === 'radio') {
-                if (el.checked) raw[el.name] = el.value;
-            } else if (el.type === 'checkbox') {
-                if (el.checked) raw[el.name] = el.value;
-                else if (!(el.name in raw)) raw[el.name] = '';
-            } else {
-                raw[el.name] = el.value;
+        
+        // 食事・宿泊情報を表示
+        function displayMeals(data) {
+            if (data.entryType === 'cancel') {
+                document.getElementById('mealsSection').style.display = 'none';
+                return;
             }
-        });
-        raw['attendance'] = 'confirmed';
-        raw['attendance_label'] = '参加確定';
-        const params = new URLSearchParams(raw).toString();
-        window.location.href = 'confirmation.html?' + params;
+            
+            document.getElementById('mealsSection').style.display = 'block';
+            
+            let html = '<table class="meal-table"><thead><tr><th></th><th>○申し込む</th><th>×申し込まない</th></tr></thead><tbody>';
+            
+            // 日付をYYYY-MM-DD文字列のまま比較（タイムゾーンズレ回避）
+            const startDateStr = data.startDate || '';
+            const endDateStr   = data.endDate   || '';
+            const firstMeal    = data['first-meal'] || 'lunch';
+            const lastMeal     = data['last-meal']  || 'lunch';
+            
+            // 日付マッピング（文字列で管理）
+            const dateMap = {
+                1: { str: '2026-05-04', label: '5月4日' },
+                2: { str: '2026-05-05', label: '5月5日' },
+                3: { str: '2026-05-06', label: '5月6日' }
+            };
+            
+            const allMeals = [];
+            for (let dayIndex = 1; dayIndex <= 3; dayIndex++) {
+                ['朝食', '昼食', '夕食', '宿泊'].forEach((mealType, mealOrder) => {
+                    // 最終日の宿泊はスキップ
+                    if (dayIndex === 3 && mealType === '宿泊') return;
+                    
+                    const key   = `${mealType}[${dayIndex}]`;
+                    const value = data[key] || 'no';
+                    
+                    let isInRange = false;
 
-    } else {
-        // 参加未定・不参加：最小データをGASに送信してnotattending.htmlへ遷移
-        const payload = {
-            'family-name':      document.getElementById('family-name')?.value  || '',
-            'family-kana':      document.getElementById('family-kana')?.value  || '',
-            'first-name':       document.getElementById('first-name')?.value   || '',
-            'first-kana':       document.getElementById('first-kana')?.value   || '',
-            'gender':           document.querySelector('input[name="gender"]:checked')?.value || '',
-            'email-address':    document.getElementById('email-address')?.value || '',
-            'attendance':       attendance,
-            'attendance_label': attendanceMap[attendance]
-        };
+                    if (data.GOBACK === 'All') {
+                        // 全参加：すべて範囲内
+                        isInRange = true;
 
-        showOverlay('送信中です…<br><small>しばらくお待ちください</small>', false);
+                    } else if (data.GOBACK === 'MiddleCameBack' && startDateStr && endDateStr) {
+                        const dayStr    = dateMap[dayIndex].str;
+                        const inRange   = dayStr >= startDateStr && dayStr <= endDateStr;
+                        const isStart   = dayStr === startDateStr;
+                        const isEnd     = dayStr === endDateStr;
 
-        try {
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                        isInRange = inRange;
+
+                        // 初日：到着時間より前の食事は範囲外
+                        if (isStart) {
+                            if (firstMeal === 'brackfeast' && mealType === '朝食') isInRange = false; // 朝食前到着→朝食なし（朝食前という表示だから朝食は食べない）
+                            if (firstMeal === 'lunch'      && mealType === '朝食') isInRange = false;
+                            if (firstMeal === 'dinner'     && (mealType === '朝食' || mealType === '昼食')) isInRange = false;
+                            if (firstMeal === 'afterdinner'&& (mealType === '朝食' || mealType === '昼食' || mealType === '夕食')) isInRange = false;
+                        }
+
+                        // 最終日：帰宅時間より後の食事は範囲外
+                        if (isEnd) {
+                            if (lastMeal === 'beforbrackfeast') isInRange = false;
+                            if (lastMeal === 'brackfeast' && (mealType === '昼食' || mealType === '夕食' || mealType === '宿泊')) isInRange = false;
+                            if (lastMeal === 'lunch'      && (mealType === '夕食' || mealType === '宿泊')) isInRange = false;
+                            if (lastMeal === 'dinner'     &&  mealType === '宿泊') isInRange = false;
+                        }
+                    }
+                    
+                    allMeals.push({
+                        label:   `${dateMap[dayIndex].label}${mealType}`,
+                        value:   value,
+                        isBold:  mealType === '宿泊',
+                        isInRange
+                    });
+                });
+            }
+            
+            // テーブル行を生成
+            allMeals.forEach(item => {
+                const isYes = item.value === 'yes';
+                const isNo  = item.value === 'no';
+                
+                // 範囲外 かつ ×の行はグレー
+                const rowStyle   = (!item.isInRange && isNo)  ? ' style="background:#f5f5f5;"' : '';
+                const labelStyle = (!item.isInRange && isNo)  ? ' style="color:#999;"'         : '';
+                const labelCell  = item.isBold ? `<b>${item.label}</b>` : item.label;
+                
+                html += `<tr${rowStyle}>
+                    <td${labelStyle}>${labelCell}</td>
+                    <td>${isYes ? '<span class="meal-yes">○</span>' : ''}</td>
+                    <td>${isNo  ? '<span class="meal-no">×</span>'  : ''}</td>
+                </tr>`;
             });
-            const label = encodeURIComponent(attendanceMap[attendance]);
-            const name  = encodeURIComponent(payload['first-name']);
-            window.location.href = `notattending.html?attendance=${attendance}&name=${name}&label=${label}`;
-        } catch (e) {
-            showOverlay('送信に失敗しました。<br><small>通信環境を確認してもう一度お試しください。</small>', true);
+            
+            if (allMeals.length === 0) {
+                html += '<tr><td colspan="3">食事・宿泊情報がありません</td></tr>';
+            }
+            
+            html += '</tbody></table>';
+            document.getElementById('mealsInfo').innerHTML = html;
         }
-    }
-}
+        
+        // 追加申込者を表示
+        function displayAdditionalApplicants(data) {
+            let html = '';
+            let count = 1;
+            
+            for (let i = 4; i <= 14; i++) {
+                if (data[`first-name${i}`]) {
+                    html += `
+                        <div class="section">
+                            <h2>追加申込者 ${count}</h2>
+                            <div class="applicant-block">
+                                <div class="applicant-title">${data[`first-name${i}`]} (${data[`first-kana${i}`] || ''})</div>
+                                <div class="info-row">
+                                    <div class="info-label">性別</div>
+                                    <div class="info-value">${data[`gender${i}`] === 'male' ? '男性' : '女性'}</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">生年月日</div>
+                                    <div class="info-value">${data[`birthday${i}`] || ''}</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">年齢</div>
+                                    <div class="info-value">${data[`age${i}`] || ''}歳</div>
+                                </div>
+                                <div style="margin-top:1rem;">
+                                    <strong>食事:</strong><br>
+                                    朝食: ${data[`breakfast${i}`] === 'yes' ? '<span class="meal-yes">○</span>' : '<span class="meal-no">×</span>'} | 
+                                    昼食: ${data[`lunch${i}`] === 'yes' ? '<span class="meal-yes">○</span>' : '<span class="meal-no">×</span>'} | 
+                                    夕食: ${data[`dinner${i}`] === 'yes' ? '<span class="meal-yes">○</span>' : '<span class="meal-no">×</span>'}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    count++;
+                }
+            }
+            
+            document.getElementById('additionalApplicants').innerHTML = html;
+        }
+        
+        // その他情報を表示
+        function displayOther(data) {
+            const html = `
+                <div class="info-row">
+                    <div class="info-label">アレルギー</div>
+                    <div class="info-value">${data.Allergy || 'なし'}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">その他</div>
+                    <div class="info-value">${data.Others || 'なし'}</div>
+                </div>
+            `;
+            document.getElementById('otherInfo').innerHTML = html;
+        }
+        
+        // 戻るボタン
+        function goBack() {
+            window.location.href = 'churchCampApplication.html';
+        }
+        
+        // Googleスプレッドシートに送信
+        async function submitToGoogleSheets() {
+            const data = getFormData();
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingMsg = document.getElementById('loadingMessage');
+            
+            submitBtn.disabled = true;
+            loadingMsg.style.display = 'block';
+            
+            // Google Apps ScriptのウェブアプリURLをここに設定
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1yyDZXOvTEmfTwvbSJ6gEA8Ik1x5w8lTFNHPUHSXpho2oFeIq_8ljgybeigQHUAr-/exec';
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                // no-corsモードでは成功判定できないため、一定時間後に成功とみなす
+                setTimeout(() => {
+                    loadingMsg.style.display = 'none';
+                    // 完了ページに遷移
+                    window.location.href = 'complete.html';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                loadingMsg.style.display = 'none';
+                alert('送信中にエラーが発生しました。もう一度お試しください。');
+                submitBtn.disabled = false;
+            }
+        }
+        
+        // ページ読み込み時に実行
+        window.addEventListener('DOMContentLoaded', () => {
+            const data = getFormData();
+            displayMainApplicant(data);
+            displayParticipation(data);
+            displayMeals(data);
+            displayAdditionalApplicants(data);
+            displayOther(data);
+        });
     </script>
 </body>
-
 </html>
