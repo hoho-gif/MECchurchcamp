@@ -610,7 +610,11 @@ table th, table td {
                     <label for="startDate">参加日
                         <span class="required">*</span>
                     </label>
-                    <input type="date" id="startDate" value="2026-05-04" min="2026-05-04" max="2026-05-06" required>
+                    <select id="startDate" name="startDate" required>
+                        <option value="2026-05-04" selected>5月4日（月・祝）</option>
+                        <option value="2026-05-05">5月5日（火・祝）</option>
+                        <option value="2026-05-06">5月6日（水・祝）</option>
+                    </select>
                     <label id="first-meal-label" for="first-meal">到着時間を教えてください
                         <span class="required">*</span>
                     </label>
@@ -619,7 +623,11 @@ table th, table td {
                     <label for="endDate">帰宅日
                         <span class="required">*</span>
                     </label>
-                    <input type="date" id="endDate" value="2026-05-06" min="2026-05-04" max="2026-05-06" required>
+                    <select id="endDate" name="endDate" required>
+                        <option value="2026-05-04">5月4日（月・祝）</option>
+                        <option value="2026-05-05">5月5日（火・祝）</option>
+                        <option value="2026-05-06" selected>5月6日（水・祝）</option>
+                    </select>
                     <label id="last-meal-label" for="last-meal">帰宅時間を教えてください
                         <span class="required">*</span>
                     </label>
@@ -839,14 +847,6 @@ function renderExtraApplicants(start = 5, end = 15) {
     }
 }
 
-// 参加日が変わったら帰宅日のminを更新
-document.getElementById('startDate').addEventListener('change', e => {
-    const start = e.target.value;
-    const endInput = document.getElementById('endDate');
-    endInput.min = start;
-    if (endInput.value < start) endInput.value = start;
-});
-
 // 参加状況切替
 const toggleFields = () => {
     const selectValue = document.getElementById('GOBACK').value;
@@ -995,27 +995,51 @@ const generateAllJoinMealTable = () => {
 
 // 到着・帰宅時間の選択肢を日付ごとに動的生成
 function updateMealSelect(dateId, selectId) {
-    const mealOptionsByDate = {
+    // 到着時間（first-meal）：その日から何の食事の前に来るか
+    const arrivalByDate = {
         '2026-05-04': [
-            { value: 'lunch', label: '昼食前' },
-            { value: 'dinner', label: '夕食前' },
-            { value: 'afterdinner', label: '夕食後' }
+            { value: 'lunch',      label: '昼食前' },
+            { value: 'dinner',     label: '夕食前' },
+            { value: 'afterdinner',label: '夕食後' }
         ],
         '2026-05-05': [
             { value: 'brackfeast', label: '朝食前' },
-            { value: 'lunch', label: '昼食前' },
-            { value: 'dinner', label: '夕食前' },
-            { value: 'afterdinner', label: '夕食後' }
+            { value: 'lunch',      label: '昼食前' },
+            { value: 'dinner',     label: '夕食前' },
+            { value: 'afterdinner',label: '夕食後' }
         ],
         '2026-05-06': [
-            { value: 'brackfeast', label: '昼食前' },
-            { value: 'lunch', label: '夕食前' }
+            { value: 'brackfeast', label: '朝食前' },
+            { value: 'lunch',      label: '昼食前' }
         ]
     };
-    const date = document.getElementById(dateId)?.value;
+    // 帰宅時間（last-meal）：その日の何の食事の後に帰るか
+    const departureByDate = {
+        '2026-05-04': [
+            { value: 'brackfeast', label: '朝食後' },
+            { value: 'lunch',      label: '昼食後' },
+            { value: 'dinner',     label: '夕食後' }
+        ],
+        '2026-05-05': [
+            { value: 'brackfeast', label: '朝食後' },
+            { value: 'lunch',      label: '昼食後' },
+            { value: 'dinner',     label: '夕食後' }
+        ],
+        '2026-05-06': [
+            { value: 'brackfeast', label: '朝食後' },
+            { value: 'lunch',      label: '昼食後' }
+        ]
+    };
+
+    const date   = document.getElementById(dateId)?.value;
     const select = document.getElementById(selectId);
     if (!date || !select) return;
-    const opts = mealOptionsByDate[date] || [];
+
+    const isLastMeal = selectId === 'last-meal';
+    const opts = isLastMeal
+        ? (departureByDate[date] || [])
+        : (arrivalByDate[date]   || []);
+
     select.innerHTML = '';
     opts.forEach((opt, idx) => {
         const option = document.createElement('option');
