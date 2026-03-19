@@ -449,7 +449,7 @@ table th, table td {
         <button class="font-btn size-s" onclick="setFontSize('small')"  id="fs-small">小</button>
         <button class="font-btn size-m active" onclick="setFontSize('medium')" id="fs-medium">標準</button>
         <button class="font-btn size-l" onclick="setFontSize('large')"  id="fs-large">大</button>
-        <button class="font-btn size-xl" onclick="setFontSize('xlarge')" id="fs-xlarge">特大</button>
+        <button class="font-btn size-xl" onclick="setFontSize('xlarge')" id="fs-xlarge">特大<br><span style="font-size:0.65em;font-weight:400;">（老眼用）</span></button>
     </div>
 
     <main>
@@ -461,7 +461,8 @@ table th, table td {
                 <h2 style="color:#1976d2; margin-top:0; font-size:1.2rem;">📋 申し込みにあたって</h2>
                 <p style="margin:0; line-height:2; font-size:0.97rem;">
                     <strong>■ 日程</strong><br>
-                    5月4日（月・祝）から5月6日（水・祝）<br><br>
+                    5月4日（月・祝）から5月6日（水・祝）<br>
+                    下のメールアドレスには代表者のメールアドレスを書いてください。<br><br>
                     <strong>■ 場所</strong><br>
                     三鷹市川上郷自然の村<br>
                     〒384-1406 長野県南佐久郡川上村原５９１−３６２<br>
@@ -473,8 +474,7 @@ table th, table td {
                     （参加人数によって施設利用料の按分があるため、変動します）<br><br>
                     <strong>■ 特記事項</strong><br>
                     ・全室、和室になります<br>
-                    ・3月28日（土）に下見に行くので、特に確認してほしい事があればご連絡ください<br>
-                    ・下のメールアドレスには代表者のメールアドレスを書いてください。<br>
+                    ・3月28日（土）に下見に行くので、特に確認してほしい事があればご連絡ください
                 </p>
             </div>
 
@@ -545,10 +545,22 @@ table th, table td {
             <!-- 参加確定の場合のみ表示される残りの質問 -->
             <div id="confirmedOnlySection" style="display:none;">
             <form>
-                <label for="birthday">生年月日
+                <label>生年月日
                     <span class="required">*</span>
                 </label>
-                <input type="date" name="birthday" id="birthday" value="2000-01-01" required>
+                <div style="display:flex; gap:0.5em; align-items:center; flex-wrap:wrap; margin-bottom:0.7em;">
+                    <select id="birthday-year" name="birthday-year" style="width:90px; text-align:center;">
+                    </select>
+                    <span>年</span>
+                    <select id="birthday-month" name="birthday-month" style="width:70px; text-align:center;">
+                    </select>
+                    <span>月</span>
+                    <select id="birthday-day" name="birthday-day" style="width:70px; text-align:center;">
+                    </select>
+                    <span>日</span>
+                </div>
+                <!-- GAS送信用の隠しフィールド（YYYY-MM-DD形式） -->
+                <input type="hidden" id="birthday" name="birthday">
             </form>
             <form>
                 <label for="age">年齢
@@ -756,29 +768,81 @@ const fetchAddress = zipCode => {
 };
 document.getElementById('zipcode').addEventListener('input', e => fetchAddress(e.target.value));
 
-// 生年月日→年齢自動計算
+// 生年月日セレクトボックスを初期化
+function initBirthdaySelects() {
+    const yearSel  = document.getElementById('birthday-year');
+    const monthSel = document.getElementById('birthday-month');
+    const daySel   = document.getElementById('birthday-day');
+    if (!yearSel || !monthSel || !daySel) return;
+
+    // 年（1920〜今年）
+    const thisYear = new Date().getFullYear();
+    yearSel.innerHTML = '<option value="">年</option>';
+    for (let y = thisYear; y >= 1920; y--) {
+        yearSel.innerHTML += `<option value="${y}"${y === 2000 ? ' selected' : ''}>${y}</option>`;
+    }
+
+    // 月
+    monthSel.innerHTML = '<option value="">月</option>';
+    for (let m = 1; m <= 12; m++) {
+        monthSel.innerHTML += `<option value="${String(m).padStart(2,'0')}"${m === 1 ? ' selected' : ''}>${m}</option>`;
+    }
+
+    // 日（初期は31日分）
+    updateDayOptions();
+
+    // 月・年が変わったら日の選択肢を更新
+    yearSel.addEventListener('change',  updateDayOptions);
+    monthSel.addEventListener('change', updateDayOptions);
+
+    // いずれか変更されたら年齢を再計算
+    [yearSel, monthSel, daySel].forEach(el => el.addEventListener('change', updateAgeAtCamp));
+}
+
+function updateDayOptions() {
+    const yearSel  = document.getElementById('birthday-year');
+    const monthSel = document.getElementById('birthday-month');
+    const daySel   = document.getElementById('birthday-day');
+    if (!daySel) return;
+    const y = parseInt(yearSel?.value) || 2000;
+    const m = parseInt(monthSel?.value) || 1;
+    const maxDay = new Date(y, m, 0).getDate(); // その月の末日
+    const current = parseInt(daySel.value) || 1;
+    daySel.innerHTML = '<option value="">日</option>';
+    for (let d = 1; d <= maxDay; d++) {
+        const val = String(d).padStart(2, '0');
+        daySel.innerHTML += `<option value="${val}"${d === (current <= maxDay ? current : 1) ? ' selected' : ''}>${d}</option>`;
+    }
+}
+
+// 生年月日セレクト→隠しフィールドに YYYY-MM-DD をセット＆年齢自動計算
 const updateAgeAtCamp = () => {
-    const birthdayInput = document.getElementById('birthday');
-    const ageAtCampSpan = document.getElementById('ageAtCamp');
-    if (!birthdayInput || !ageAtCampSpan) return;
-    const birth = birthdayInput.value;
-    if (!birth) {
-        ageAtCampSpan.textContent = '';
+    const y = document.getElementById('birthday-year')?.value;
+    const m = document.getElementById('birthday-month')?.value;
+    const d = document.getElementById('birthday-day')?.value;
+    const hiddenBirthday = document.getElementById('birthday');
+    const ageAtCampSpan  = document.getElementById('ageAtCamp');
+
+    if (!y || !m || !d || y === '' || m === '' || d === '') {
+        if (hiddenBirthday) hiddenBirthday.value = '';
+        if (ageAtCampSpan)  ageAtCampSpan.textContent = '';
         return;
     }
+
+    const birthStr = `${y}-${m}-${d}`;
+    if (hiddenBirthday) hiddenBirthday.value = birthStr;
+
     const campStart = new Date('2026-05-04');
-    const birthDate = new Date(birth);
+    const birthDate = new Date(birthStr);
     let age = campStart.getFullYear() - birthDate.getFullYear();
-    const m = campStart.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && campStart.getDate() < birthDate.getDate())) {
-        age--;
-    }
-    ageAtCampSpan.textContent = `（キャンプ開始時: ${age}歳）`;
+    const mo = campStart.getMonth() - birthDate.getMonth();
+    if (mo < 0 || (mo === 0 && campStart.getDate() < birthDate.getDate())) age--;
+
+    if (ageAtCampSpan) ageAtCampSpan.textContent = `（キャンプ開始時: ${age}歳）`;
     const ageInput = document.getElementById('age');
     if (ageInput) ageInput.value = age;
 };
-document.getElementById('birthday').addEventListener('change', updateAgeAtCamp);
-window.addEventListener('DOMContentLoaded', updateAgeAtCamp);
+window.addEventListener('DOMContentLoaded', initBirthdaySelects);
 
 // 追加申込者欄の生年月日→年齢自動計算
 function updateExtraAges() {
@@ -1066,6 +1130,7 @@ function updateMealSelect(dateId, selectId) {
 
 // イベント登録
 window.addEventListener('DOMContentLoaded', () => {
+    initBirthdaySelects();
     renderExtraApplicants(5, 15);
     updateExtraAges();
     updateMealSelect('startDate', 'first-meal');
@@ -1106,7 +1171,7 @@ function rempeople() {
 }
 
 // ── Google Apps Script への送信 ──
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwPsfB53tdaMFNb6L8kjbnXqKqZCnm8U9n3HkD6WPtWj7Lu6z16nK_ZKJIPFJWJStNO/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTZ8OIIug3KaFA17fHwaLrV43BryfQE3qD3lCkc92JBLE30GVQvEWROZPk_JEXOTmo/exec';
 
 // フォーム上の全inputを name: value の形で収集（GASがJSONを直接パース）
 function collectFormData() {
@@ -1178,7 +1243,7 @@ async function nextpage() {
         const addressNum  = document.getElementById('addressNum')?.value.trim();
         const goback      = document.getElementById('GOBACK')?.value;
 
-        if (!birthday)   { alert('生年月日を入力してください。'); document.getElementById('birthday').focus(); return; }
+        if (!birthday)   { alert('生年月日を選択してください。'); document.getElementById('birthday-year').focus(); return; }
         if (!age)        { alert('年齢を入力してください。'); document.getElementById('age').focus(); return; }
         if (!phone)      { alert('電話番号を入力してください。'); document.getElementById('phone-number').focus(); return; }
         if (!zipcode)    { alert('郵便番号を入力してください。'); document.getElementById('zipcode').focus(); return; }
