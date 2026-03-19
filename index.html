@@ -957,20 +957,36 @@ const generateMealTable = () => {
 
 // 全参加 食事・宿泊ラジオボタン生成
 const generateAllJoinMealTable = () => {
+    // GASの meal('朝食[1]') 等と一致させる
+    // dayIndex: 1=5/4, 2=5/5, 3=5/6
     const days = [
-        { date: '5/4', meals: ['昼食', '夕食', '宿泊'] },
-        { date: '5/5', meals: ['朝食', '昼食', '夕食', '宿泊'] },
-        { date: '5/6', meals: ['朝食', '昼食'] },
+        { label: '5/4', index: 1, meals: [
+            { key: '昼食', label: '昼食' },
+            { key: '夕食', label: '夕食' },
+            { key: '宿泊', label: '宿泊' }
+        ]},
+        { label: '5/5', index: 2, meals: [
+            { key: '朝食', label: '朝食' },
+            { key: '昼食', label: '昼食' },
+            { key: '夕食', label: '夕食' },
+            { key: '宿泊', label: '宿泊' }
+        ]},
+        { label: '5/6', index: 3, meals: [
+            { key: '朝食', label: '朝食' },
+            { key: '昼食', label: '昼食' }
+        ]},
     ];
     let html = '<table><thead><tr><th></th><th>〇申し込む</th><th>×申し込まない</th></tr></thead><tbody>';
-    days.forEach((d, i) => {
+    days.forEach(d => {
         d.meals.forEach(meal => {
-            const labelCell = meal === '宿泊'
-                ? `<b>${d.date}${meal}</b>`
-                : `${d.date}${meal}`;
+            const labelCell = meal.key === '宿泊'
+                ? `<b>${d.label}${meal.label}</b>`
+                : `${d.label}${meal.label}`;
+            // name属性を「朝食[1]」形式に統一（GASと一致）
+            const nameAttr = `${meal.key}[${d.index}]`;
             html += `<tr><td>${labelCell}</td>` +
-                `<td><input type="radio" name="${meal}[${i + 1}]" value="yes" class="large-object" checked></td>` +
-                `<td><input type="radio" name="${meal}[${i + 1}]" value="no" class="large-object"></td></tr>`;
+                `<td><input type="radio" name="${nameAttr}" value="yes" class="large-object" checked></td>` +
+                `<td><input type="radio" name="${nameAttr}" value="no" class="large-object"></td></tr>`;
         });
     });
     html += '</tbody></table>';
