@@ -337,10 +337,10 @@
         
         function getMealTimeLabel(value) {
             const labels = {
-                'brackfeast': '朝食前',
-                'lunch': '昼食前',
-                'dinner': '夕食前',
-                'afterdinner': '夕食後',
+                'brackfeast':      '朝食後',
+                'lunch':           '昼食後',
+                'dinner':          '夕食後',
+                'afterdinner':     '夕食後',
                 'beforbrackfeast': '朝食前'
             };
             return labels[value] || value;
@@ -515,7 +515,7 @@
             loadingMsg.style.display = 'block';
             
             // Google Apps ScriptのウェブアプリURLをここに設定
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynl7_92BBh5zdJbectFTP4qdwLmXZFyduS2bVABRePBCNufeBKgNt0wTpwYwa98lzS/exec';
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1yyDZXOvTEmfTwvbSJ6gEA8Ik1x5w8lTFNHPUHSXpho2oFeIq_8ljgybeigQHUAr-/exec';
             
             try {
                 const response = await fetch(SCRIPT_URL, {
