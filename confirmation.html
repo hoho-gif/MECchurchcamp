@@ -375,6 +375,12 @@
                 ['朝食', '昼食', '夕食', '宿泊'].forEach((mealType, mealOrder) => {
                     // 最終日の宿泊はスキップ
                     if (dayIndex === 3 && mealType === '宿泊') return;
+
+                    // 全参加の場合：キャンプスケジュール外の食事はスキップ
+                    // 5/4は昼食から（朝食はスキップ）、5/6は昼食まで（夕食・宿泊はスキップ）
+                    if (data.GOBACK === 'All') {
+                        if (dayIndex === 1 && mealType === '朝食') return; // 5/4朝食なし
+                    }
                     
                     const key   = `${mealType}[${dayIndex}]`;
                     const value = data[key] || 'no';
@@ -382,7 +388,6 @@
                     let isInRange = false;
 
                     if (data.GOBACK === 'All') {
-                        // 全参加：すべて範囲内
                         isInRange = true;
 
                     } else if (data.GOBACK === 'MiddleCameBack' && startDateStr && endDateStr) {
@@ -395,7 +400,7 @@
 
                         // 初日：到着時間より前の食事は範囲外
                         if (isStart) {
-                            if (firstMeal === 'brackfeast' && mealType === '朝食') isInRange = false; // 朝食前到着→朝食なし（朝食前という表示だから朝食は食べない）
+                            if (firstMeal === 'brackfeast' && mealType === '朝食') isInRange = false;
                             if (firstMeal === 'lunch'      && mealType === '朝食') isInRange = false;
                             if (firstMeal === 'dinner'     && (mealType === '朝食' || mealType === '昼食')) isInRange = false;
                             if (firstMeal === 'afterdinner'&& (mealType === '朝食' || mealType === '昼食' || mealType === '夕食')) isInRange = false;
