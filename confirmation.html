@@ -329,6 +329,25 @@
                             <div class="info-value">${getMealTimeLabel(data['last-meal'])}</div>
                         </div>
                     `;
+                } else if (data.GOBACK === 'All') {
+                    html += `
+                        <div class="info-row">
+                            <div class="info-label">参加日</div>
+                            <div class="info-value">2026年5月4日（月・祝）</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">到着時間</div>
+                            <div class="info-value">昼食前</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">帰宅日</div>
+                            <div class="info-value">2026年5月6日（水・祝）</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">帰宅時間</div>
+                            <div class="info-value">昼食後</div>
+                        </div>
+                    `;
                 }
             }
             
