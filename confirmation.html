@@ -255,10 +255,6 @@
                     <div class="info-value">${data.gender === 'male' ? '男性' : '女性'}</div>
                 </div>
                 <div class="info-row">
-                    <div class="info-label">生年月日</div>
-                    <div class="info-value">${data.birthday || ''}</div>
-                </div>
-                <div class="info-row">
                     <div class="info-label">年齢</div>
                     <div class="info-value">${data.age || ''}歳</div>
                 </div>
@@ -465,10 +461,6 @@
                                     <div class="info-value">${data[`gender${i}`] === 'male' ? '男性' : '女性'}</div>
                                 </div>
                                 <div class="info-row">
-                                    <div class="info-label">生年月日</div>
-                                    <div class="info-value">${data[`birthday${i}`] || ''}</div>
-                                </div>
-                                <div class="info-row">
                                     <div class="info-label">年齢</div>
                                     <div class="info-value">${data[`age${i}`] || ''}歳</div>
                                 </div>
@@ -518,7 +510,7 @@
             loadingMsg.style.display = 'block';
             
             // Google Apps ScriptのウェブアプリURLをここに設定
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwPsfB53tdaMFNb6L8kjbnXqKqZCnm8U9n3HkD6WPtWj7Lu6z16nK_ZKJIPFJWJStNO/exec';
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynl7_92BBh5zdJbectFTP4qdwLmXZFyduS2bVABRePBCNufeBKgNt0wTpwYwa98lzS/exec';
             
             try {
                 const response = await fetch(SCRIPT_URL, {
