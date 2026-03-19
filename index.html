@@ -449,7 +449,7 @@ table th, table td {
         <button class="font-btn size-s" onclick="setFontSize('small')"  id="fs-small">小</button>
         <button class="font-btn size-m active" onclick="setFontSize('medium')" id="fs-medium">標準</button>
         <button class="font-btn size-l" onclick="setFontSize('large')"  id="fs-large">大</button>
-        <button class="font-btn size-xl" onclick="setFontSize('xlarge')" id="fs-xlarge">特大</button>
+        <button class="font-btn size-xl" onclick="setFontSize('xlarge')" id="fs-xlarge">特大<br><span style="font-size:0.65em;font-weight:400;">（老眼用）</span></button>
     </div>
 
     <main>
@@ -903,54 +903,92 @@ function updateEntryType() {
 document.getElementById('entryTypeGroup').addEventListener('change', updateEntryType);
 window.addEventListener('DOMContentLoaded', updateEntryType);
 
-// 部分参加 食事・宿泊ラジオボタン生成
+// 部分参加 食事・宿泊テーブル生成（全日程表示・範囲外はグレーアウト＆選択不可）
 const generateMealTable = () => {
-    const start = document.getElementById('startDate')?.value || '2026-05-04';
-    const end = document.getElementById('endDate')?.value || '2026-05-06';
+    const start     = document.getElementById('startDate')?.value || '2026-05-04';
+    const end       = document.getElementById('endDate')?.value   || '2026-05-06';
     const firstMeal = document.getElementById('first-meal')?.value || 'lunch';
-    const lastMeal = document.getElementById('last-meal')?.value || 'lunch';
-    const days = [];
-    let d = new Date(start);
-    const endD = new Date(end);
-    while (d <= endD) {
-        days.push(new Date(d));
-        d.setDate(d.getDate() + 1);
-    }
-    const mealDefs = [
-        { key: 'breakfast', label: '朝食' },
-        { key: 'lunch', label: '昼食' },
-        { key: 'dinner', label: '夕食' },
-        { key: 'stay', label: '宿泊' },
+    const lastMeal  = document.getElementById('last-meal')?.value  || 'brackfeast';
+
+    // キャンプ全日程（固定）
+    const allDays = [
+        { str: '2026-05-04', label: '5/4', index: 1 },
+        { str: '2026-05-05', label: '5/5', index: 2 },
+        { str: '2026-05-06', label: '5/6', index: 3 },
     ];
-    let html = '<table><thead><tr><th></th><th>〇申し込む</th><th>×申し込まない</th></tr></thead><tbody>';
-    days.forEach((date, i) => {
-        const mmdd = `${date.getMonth() + 1}/${date.getDate()}`;
+
+    const mealDefs = [
+        { key: '朝食', label: '朝食' },
+        { key: '昼食', label: '昼食' },
+        { key: '夕食', label: '夕食' },
+        { key: '宿泊', label: '宿泊' },
+    ];
+
+    // ある食事が参加範囲内かどうか判定
+    function isInRange(dayStr, mealKey) {
+        // 宿泊は最終日（5/6）には存在しない
+        if (dayStr === '2026-05-06' && mealKey === '宿泊') return false;
+
+        // 参加日程の範囲外の日
+        if (dayStr < start || dayStr > end) return false;
+
+        const isStartDay = dayStr === start;
+        const isEndDay   = dayStr === end;
+
+        // 初日：到着時間より前の食事は範囲外
+        if (isStartDay) {
+            if (firstMeal === 'lunch'       && mealKey === '朝食') return false;
+            if (firstMeal === 'dinner'      && (mealKey === '朝食' || mealKey === '昼食')) return false;
+            if (firstMeal === 'afterdinner' && (mealKey === '朝食' || mealKey === '昼食' || mealKey === '夕食')) return false;
+        }
+
+        // 最終日：帰宅時間より後の食事は範囲外
+        // lastMeal は「朝食後=brackfeast」「昼食後=lunch」「夕食後=dinner」
+        if (isEndDay) {
+            if (lastMeal === 'brackfeast' && (mealKey === '昼食' || mealKey === '夕食' || mealKey === '宿泊')) return false;
+            if (lastMeal === 'lunch'      && (mealKey === '夕食' || mealKey === '宿泊')) return false;
+            // dinner（夕食後）は宿泊のみ範囲外
+            if (lastMeal === 'dinner'     &&  mealKey === '宿泊') return false;
+        }
+
+        return true;
+    }
+
+    let html = `<table><thead><tr>
+        <th></th>
+        <th>〇申し込む</th>
+        <th>×申し込まない</th>
+    </tr></thead><tbody>`;
+
+    allDays.forEach(day => {
         mealDefs.forEach(meal => {
-            if (i === days.length - 1 && lastMeal === 'brackfeast') {
-                if (meal.key === 'breakfast') {
-                } else {
-                    return;
-                }
+            // 5/6の宿泊は存在しないのでスキップ
+            if (day.str === '2026-05-06' && meal.key === '宿泊') return;
+
+            const inRange  = isInRange(day.str, meal.key);
+            const nameAttr = `${meal.key}[${day.index}]`;
+            const labelCell = meal.key === '宿泊'
+                ? `<b>${day.label}${meal.label}</b>`
+                : `${day.label}${meal.label}`;
+
+            if (inRange) {
+                // 範囲内：通常の選択可能ラジオ
+                html += `<tr>
+                    <td>${labelCell}</td>
+                    <td><input type="radio" name="${nameAttr}" value="yes" class="large-object" checked></td>
+                    <td><input type="radio" name="${nameAttr}" value="no"  class="large-object"></td>
+                </tr>`;
+            } else {
+                // 範囲外：グレーアウト・選択不可・値はnoで隠しフィールドとして送信
+                html += `<tr style="background:#f0f0f0; color:#aaa;">
+                    <td style="color:#bbb;">${labelCell}</td>
+                    <td><input type="radio" name="${nameAttr}" value="yes" class="large-object" disabled style="opacity:0.3;"></td>
+                    <td><input type="radio" name="${nameAttr}" value="no"  class="large-object" disabled style="opacity:0.3;" checked></td>
+                </tr>`;
             }
-            if (meal.key === 'stay' && i === days.length - 1) return;
-            if (i === 0) {
-                if (meal.key === 'breakfast' && firstMeal !== 'brackfeast') return;
-                if (meal.key === 'lunch' && (firstMeal === 'dinner' || firstMeal === 'afterdinner')) return;
-                if (meal.key === 'dinner' && firstMeal === 'afterdinner') return;
-            }
-            if (i === days.length - 1) {
-                if (meal.key === 'dinner' && (lastMeal === 'lunch' || lastMeal === 'breakfast' || lastMeal === 'beforbrackfeast')) return;
-                if (meal.key === 'lunch' && (lastMeal === 'breakfast' || lastMeal === 'beforbrackfeast')) return;
-                if (meal.key === 'breakfast' && lastMeal === 'beforbrackfeast') return;
-            }
-            const labelCell = meal.key === 'stay'
-                ? `<b>${mmdd}宿泊</b>`
-                : `${mmdd}${meal.label}`;
-            html += `<tr><td>${labelCell}</td>` +
-                `<td><input type="radio" name="${meal.key}[${i + 1}]" value="yes" class="large-object" checked></td>` +
-                `<td><input type="radio" name="${meal.key}[${i + 1}]" value="no" class="large-object"></td></tr>`;
         });
     });
+
     html += '</tbody></table>';
     document.getElementById('dynamicMealTable').innerHTML = html;
 };
